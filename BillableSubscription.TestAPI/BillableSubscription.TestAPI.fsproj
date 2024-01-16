@@ -6,11 +6,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Library.fs" />
+    <Compile Include="Mock.fs" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BillableSubscription\BillableSubscription.fsproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="FSharp.Core" Version="8.0.101" />
   </ItemGroup>
 
 </Project>

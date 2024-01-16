@@ -7,7 +7,6 @@ module Language =
     type Key              = string
     type ErrorDescription = string
     type SubscriptionId   = string
-    type PlanId           = string
 
     [<CLIMutable>]
     type RegistrationRequest = {
@@ -15,6 +14,7 @@ module Language =
         LastName  : string
         Phone     : string
         Email     : string
+        Plan      : string
     }
 
     [<CLIMutable>]
