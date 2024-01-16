@@ -1,12 +1,12 @@
 module BillableSubscription.Tests
 
+open System.Net
 open System.Configuration
 open Microsoft.Azure.Cosmos
 open Azure.Identity
 open NUnit.Framework
 open BeachMobile.BillableSubscription.TestAPI.Mock
 open BeachMobile.BillableSubscription.Entities
-open System.Net
 
 [<Ignore("")>]
 [<Test>]

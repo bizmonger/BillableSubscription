@@ -4,8 +4,8 @@ open Language
 
 module Operations =
 
-    type RequestRegistration   = RegistrationRequest    -> Result<SubscriptionId      ,ErrorDescription>
-    type GetSubscriptionStatus = GetSubscriptionRequest -> Result<Option<Subscription>,ErrorDescription>
+    type RequestRegistration   = RegistrationRequest    -> Async<Result<SubscriptionId      ,ErrorDescription>>
+    type GetSubscriptionStatus = GetSubscriptionRequest -> Async<Result<Option<Subscription>,ErrorDescription>>
 
-    type SubmitPayment     = PaymentRequest -> Result<SuccessfulPayment,ErrorDescription>
-    type GetPaymentHistory = SubscriptionId -> Result<PaymentHistory   ,ErrorDescription>
+    type SubmitPayment     = PaymentRequest -> Async<Result<SuccessfulPayment,ErrorDescription>>
+    type GetPaymentHistory = SubscriptionId -> Async<Result<PaymentHistory   ,ErrorDescription>>
