@@ -6,10 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Cache.fs" />
     <Compile Include="Entities.fs" />
     <Compile Include="CosmosPost.fs" />
     <Compile Include="CosmosQuery.fs" />
+    <Compile Include="RedisCache.fs" />
     <Compile Include="RedisPost.fs" />
     <Compile Include="RedisQuery.fs" />
   </ItemGroup>
