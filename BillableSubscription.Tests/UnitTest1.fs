@@ -3,11 +3,11 @@ module BillableSubscription.Tests
 open Microsoft.Azure.Cosmos
 open Azure.Identity
 open NUnit.Framework
-open BeachMobile.BillableSubscription.Language
 open BeachMobile.BillableSubscription.TestAPI.Mock
+open BeachMobile.BillableSubscription.Entities
 
 [<Test>]
-let ``some test`` () =
+let ``registration request`` () =
 
     // Setup
     let credential = DefaultAzureCredential()

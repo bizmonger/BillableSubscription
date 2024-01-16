@@ -4,6 +4,7 @@ open System
 
 module Language =
 
+    type Key              = string
     type ErrorDescription = string
     type SubscriptionId   = string
     type PlanId           = string
@@ -17,15 +18,9 @@ module Language =
     }
 
     [<CLIMutable>]
-    type RegistrationRequestEntity = {
-        id : string
-        RegistrationRequest : RegistrationRequest
-    }
-
-    [<CLIMutable>]
     type Plan = {
-        PlanId : PlanId
-        Name   : string
+        Name        : string
+        Description : string
     }
 
     [<CLIMutable>]
@@ -37,7 +32,6 @@ module Language =
 
     [<CLIMutable>]
     type Subscription = {
-        SubscriptionId : SubscriptionId
         Registration   : RegistrationRequest
         Plan           : BillablePlan
         Started        : DateTime
