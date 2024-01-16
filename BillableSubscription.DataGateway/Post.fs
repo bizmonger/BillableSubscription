@@ -20,7 +20,7 @@ module Post =
             
                 let client     = new CosmosClient(ConnectionString.Instance, DefaultAzureCredential())
                 let database   = client.GetDatabase("beachmobile-db")
-                let container  = database.GetContainer("registration");
+                let container  = database.GetContainer("payments");
 
                 let request : PaymentRequestEntity = {
                     id = Guid.NewGuid() |> string
@@ -28,14 +28,30 @@ module Post =
                 }
 
                 match! container.UpsertItemAsync<PaymentRequestEntity>(request) |> Async.AwaitTask with
-                | response when response.StatusCode = HttpStatusCode.OK ->
-                    
-                    return Ok { Payment   = v
-                                Timestamp = DateTime.UtcNow
-                              }
+                | response when response.StatusCode = HttpStatusCode.OK -> 
+                    return Ok { Payment   = v; Timestamp = DateTime.UtcNow }
+
                 | response -> return Error (response.StatusCode.ToString())
             }
 
     let Registration : RequestRegistration = 
     
-        fun _ -> async { return Error "" }
+        fun v ->
+
+            async {
+            
+                let client     = new CosmosClient(ConnectionString.Instance, DefaultAzureCredential())
+                let database   = client.GetDatabase("beachmobile-db")
+                let container  = database.GetContainer("registration");
+
+                let request : RegistrationRequestEntity = {
+                    id = Guid.NewGuid() |> string
+                    RegistrationRequest = v
+                }
+
+                match! container.UpsertItemAsync<RegistrationRequestEntity>(request) |> Async.AwaitTask with
+                | response when response.StatusCode = HttpStatusCode.OK ->
+                    
+                    return Ok { id = request.id; Request = v; Timestamp = DateTime.UtcNow }
+                | response -> return Error (response.StatusCode.ToString())
+            }
