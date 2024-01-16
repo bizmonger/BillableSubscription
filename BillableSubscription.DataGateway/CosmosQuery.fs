@@ -1,4 +1,4 @@
-﻿namespace BillableSubscription.DataGateway
+﻿namespace BillableSubscription.DataGateway.Cosmos
 
 open BeachMobile.BillableSubscription.Operations
 

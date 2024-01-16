@@ -1,4 +1,4 @@
-﻿namespace BillableSubscription.DataGateway
+﻿namespace BillableSubscription.DataGateway.Cosmos
 
 open System
 open System.Net
@@ -18,9 +18,9 @@ module Post =
 
             async {
             
-                let client     = new CosmosClient(ConnectionString.Instance, DefaultAzureCredential())
-                let database   = client.GetDatabase("beachmobile-db")
-                let container  = database.GetContainer("payments");
+                let client    = new CosmosClient(ConnectionString.Instance, DefaultAzureCredential())
+                let database  = client.GetDatabase("beachmobile-db")
+                let container = database.GetContainer("payments");
 
                 let request : PaymentRequestEntity = {
                     id = Guid.NewGuid() |> string
@@ -40,9 +40,9 @@ module Post =
 
             async {
             
-                let client     = new CosmosClient(ConnectionString.Instance, DefaultAzureCredential())
-                let database   = client.GetDatabase("beachmobile-db")
-                let container  = database.GetContainer("registration");
+                let client    = new CosmosClient(ConnectionString.Instance, DefaultAzureCredential())
+                let database  = client.GetDatabase("beachmobile-db")
+                let container = database.GetContainer("registration");
 
                 let request : RegistrationRequestEntity = {
                     id = Guid.NewGuid() |> string

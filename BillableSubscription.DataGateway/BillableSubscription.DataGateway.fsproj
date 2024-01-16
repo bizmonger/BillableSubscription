@@ -8,8 +8,10 @@
   <ItemGroup>
     <Compile Include="Cache.fs" />
     <Compile Include="Entities.fs" />
-    <Compile Include="Post.fs" />
-    <Compile Include="Query.fs" />
+    <Compile Include="CosmosPost.fs" />
+    <Compile Include="CosmosQuery.fs" />
+    <Compile Include="RedisPost.fs" />
+    <Compile Include="RedisQuery.fs" />
   </ItemGroup>
 
   <ItemGroup>
