@@ -12,6 +12,13 @@ module Entities =
     }
 
     [<CLIMutable>]
+    type RegistrationStatusEntity = {
+        id : string
+        PartitionKey: string
+        Status : RegistrationStatus
+    }
+
+    [<CLIMutable>]
     type PlanEntity = {
         id   : string
         Plan : Plan
@@ -29,6 +36,12 @@ module Entities =
         id : string
         PartitionKey: string
         PaymentRequest : PaymentRequest
+    }
+
+    type PaymentHistoryEntity = {
+        id : string
+        PartitionKey: string
+        Payments : SuccessfulPayment seq
     }
 
     [<CLIMutable>]

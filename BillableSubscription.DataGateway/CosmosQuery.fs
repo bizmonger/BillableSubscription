@@ -1,8 +1,34 @@
 ﻿namespace BillableSubscription.DataGateway.Cosmos
 
+open Microsoft.Azure.Cosmos
+open BeachMobile.BillableSubscription.Language
 open BeachMobile.BillableSubscription.Operations
+open BeachMobile.BillableSubscription.Entities
+open BeachMobile.BillableSubscription.DataGateway.Cosmos
+open BeachMobile.BillableSubscription.DataGateway.Cosmos.Database
 
 module Get =
 
-    let subscription   : GetSubscriptionStatus = fun _ -> async { return Error "" }
-    let paymentHistory : GetPaymentHistory     = fun _ -> async { return Error "" }
+    let subscription : GetRegistrationStatus =
+
+        fun v -> async { 
+
+            let container = container Database.name Partition.registration
+
+            match! container.ReadItemAsync<RegistrationStatusEntity>(v.Registration.id, PartitionKey(Partition.registrationStatus)) |> Async.AwaitTask with
+            | response when response.StatusCode = System.Net.HttpStatusCode.OK -> 
+                return Ok (Some response.Resource.Status)
+            | _ -> return Error "Failed to retrieve registration status"
+        }
+
+    let paymentHistory : GetPaymentHistory = 
+
+        fun v -> async {
+
+            let container = container Database.name Partition.paymentHistory
+
+            match! container.ReadItemAsync<PaymentHistoryEntity>(v, PartitionKey(Partition.paymentHistory)) |> Async.AwaitTask with
+            | response when response.StatusCode = System.Net.HttpStatusCode.OK -> 
+                return Ok response.Resource.Payments
+            | _ -> return Error "Failed to retrieve payment history"
+        }

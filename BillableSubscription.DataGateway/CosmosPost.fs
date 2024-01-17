@@ -2,11 +2,11 @@
 
 open System
 open System.Net
-open Azure.Identity
-open Microsoft.Azure.Cosmos
 open BeachMobile.BillableSubscription.Entities
 open BeachMobile.BillableSubscription.Operations
 open BeachMobile.BillableSubscription.Language
+open BeachMobile.BillableSubscription.DataGateway.Cosmos
+open BeachMobile.BillableSubscription.DataGateway.Cosmos.Database
 
 module Post =
 
@@ -16,9 +16,7 @@ module Post =
 
             async {
             
-                let client    = new CosmosClient(ConnectionString.Instance, DefaultAzureCredential())
-                let database  = client.GetDatabase(Database.name)
-                let container = database.GetContainer(Partition.payments);
+                let container = container Database.name Partition.payments
 
                 let request : PaymentRequestEntity = {
                     PartitionKey = Partition.payments
@@ -39,9 +37,7 @@ module Post =
 
             async {
             
-                let client    = new CosmosClient(ConnectionString.Instance, DefaultAzureCredential())
-                let database  = client.GetDatabase(Database.name)
-                let container = database.GetContainer(Partition.registration);
+                let container = container Database.name Partition.registration
 
                 let request : RegistrationRequestEntity = {
                     PartitionKey = Partition.registration

@@ -3,23 +3,22 @@ module BillableSubscription.Tests
 open System.Net
 open System.Configuration
 open Microsoft.Azure.Cosmos
-open Azure.Identity
 open NUnit.Framework
 open BeachMobile.BillableSubscription.TestAPI.Mock
 open BeachMobile.BillableSubscription.Entities
+open BeachMobile.BillableSubscription.DataGateway.Cosmos
+open BeachMobile.BillableSubscription.DataGateway.Cosmos.Database
 
 [<Ignore("")>]
 [<Test>]
 let ``add registration`` () =
 
     // Setup
-    let connectionString = ConfigurationManager.AppSettings["connectionString"];
-    let client     = new CosmosClient(connectionString, DefaultAzureCredential())
-    let database   = client.GetDatabase("beachmobile-db")
-    let container  = database.GetContainer("registration");
+    ConnectionString.Instance <- ConfigurationManager.AppSettings["connectionString"];
+    let container = container Database.name Partition.registration
 
     let request : RegistrationRequestEntity = {
-        PartitionKey = "Payments"
+        PartitionKey = Partition.registration
         id = someRowKey
         RegistrationRequest = someRegistration
     }

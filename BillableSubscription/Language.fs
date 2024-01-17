@@ -33,15 +33,22 @@ module Language =
     [<CLIMutable>]
     type RegistrationReceipt = {
         id : string
-        Request : RegistrationRequest
+        Request   : RegistrationRequest
         Timestamp : DateTime
     }
 
     [<CLIMutable>]
     type Subscription = {
-        Registration   : RegistrationRequest
-        Plan           : BillablePlan
-        Started        : DateTime
+        Registration : RegistrationReceipt
+        Plan         : BillablePlan
+        Started      : DateTime
+    }
+
+    [<CLIMutable>]
+    type RegistrationStatus = {
+        Registration : RegistrationReceipt
+        Status       : string
+        Timestamp    : DateTime
     }
 
     [<CLIMutable>]

@@ -46,6 +46,6 @@ type Cache(connectionString:string) =
                 let kv'   = KeyValuePair<RedisKey,RedisValue>(RedisKey(kv.Key), RedisValue(value))
 
                 match! v.StringSetAsync([|kv'|]) |> Async.AwaitTask with
-                | false -> return Error ""
+                | false -> return Error $"Failed to cache: {kv.Key}"
                 | true  -> return Ok()
         }
