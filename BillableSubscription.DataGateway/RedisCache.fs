@@ -1,9 +1,9 @@
-﻿namespace BeachMobile.BillableSubscription
+﻿namespace BillableSubscription.DataGateway.Redis
 
 open System.Collections.Generic
 open Newtonsoft.Json
 open StackExchange.Redis
-open Language
+open BeachMobile.BillableSubscription.Language
 
 module Msg =
 

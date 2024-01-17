@@ -19,6 +19,7 @@ let ``add registration`` () =
     let container  = database.GetContainer("registration");
 
     let request : RegistrationRequestEntity = {
+        PartitionKey = "Payments"
         id = someRowKey
         RegistrationRequest = someRegistration
     }

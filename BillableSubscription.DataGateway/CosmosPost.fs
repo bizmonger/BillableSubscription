@@ -8,8 +8,6 @@ open BeachMobile.BillableSubscription.Entities
 open BeachMobile.BillableSubscription.Operations
 open BeachMobile.BillableSubscription.Language
 
-type ConnectionString() = static member val Instance = ""
-
 module Post =
 
     let Payment : SubmitPayment = 
@@ -19,10 +17,11 @@ module Post =
             async {
             
                 let client    = new CosmosClient(ConnectionString.Instance, DefaultAzureCredential())
-                let database  = client.GetDatabase("beachmobile-db")
-                let container = database.GetContainer("payments");
+                let database  = client.GetDatabase(Database.name)
+                let container = database.GetContainer(Partition.payments);
 
                 let request : PaymentRequestEntity = {
+                    PartitionKey = Partition.payments
                     id = Guid.NewGuid() |> string
                     PaymentRequest = v
                 }
@@ -41,17 +40,18 @@ module Post =
             async {
             
                 let client    = new CosmosClient(ConnectionString.Instance, DefaultAzureCredential())
-                let database  = client.GetDatabase("beachmobile-db")
-                let container = database.GetContainer("registration");
+                let database  = client.GetDatabase(Database.name)
+                let container = database.GetContainer(Partition.registration);
 
                 let request : RegistrationRequestEntity = {
+                    PartitionKey = Partition.registration
                     id = Guid.NewGuid() |> string
                     RegistrationRequest = v
                 }
 
                 match! container.UpsertItemAsync<RegistrationRequestEntity>(request) |> Async.AwaitTask with
                 | response when response.StatusCode = HttpStatusCode.OK ->
-                    
                     return Ok { id = request.id; Request = v; Timestamp = DateTime.UtcNow }
+
                 | response -> return Error (response.StatusCode.ToString())
             }

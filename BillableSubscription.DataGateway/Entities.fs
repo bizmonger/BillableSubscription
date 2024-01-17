@@ -7,6 +7,7 @@ module Entities =
     [<CLIMutable>]
     type RegistrationRequestEntity = {
         id : string
+        PartitionKey: string
         RegistrationRequest : RegistrationRequest
     }
 
@@ -19,17 +20,20 @@ module Entities =
     [<CLIMutable>]
     type SubscriptionEntity = {
         id : string
+        PartitionKey: string
         Subscription : Subscription
     }
 
     [<CLIMutable>]
     type PaymentRequestEntity = {
         id : string
+        PartitionKey: string
         PaymentRequest : PaymentRequest
     }
 
     [<CLIMutable>]
     type SuccessfulPaymentEntity = {
         id : string
+        PartitionKey: string
         SuccessfulPayment : PaymentRequestEntity
     }
