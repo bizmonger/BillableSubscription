@@ -13,19 +13,19 @@ open BeachMobile.BillableSubscription.DataGateway.Cosmos.Database
 [<Test>]
 let ``add registration`` () =
 
-    // Setup
-    ConnectionString.Instance <- ConfigurationManager.AppSettings["connectionString"];
-    let container = container Database.name Partition.registration
+    async {
+    
+        // Setup
+        ConnectionString.Instance <- ConfigurationManager.AppSettings["connectionString"];
 
-    let request : RegistrationRequestEntity = {
-        PartitionKey = Partition.registration
-        id = someRowKey
-        RegistrationRequest = someRegistration
+        // Test
+        match! someRegistration |> Post.Registration with
+        | Error msg  -> Assert.Fail msg
+        | Ok receipt ->
+
+            // Verify
+            let container = container Database.name Partition.registration
+            let response = container.ReadItemAsync<RegistrationRequestEntity>(someRowKey, PartitionKey(receipt.id)).Result
+
+            Assert.That(response.StatusCode = HttpStatusCode.OK)
     }
-
-    // Test
-    container.UpsertItemAsync<RegistrationRequestEntity>(request).Result |> ignore
-
-    // Verify
-    let response = container.ReadItemAsync<RegistrationRequestEntity>(someRowKey, PartitionKey(request.id)).Result
-    Assert.That(response.StatusCode = HttpStatusCode.OK)

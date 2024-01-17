@@ -1,4 +1,4 @@
-﻿namespace BillableSubscription.DataGateway.Cosmos
+﻿namespace BeachMobile.BillableSubscription.DataGateway.Cosmos
 
 open System
 open System.Net
@@ -39,15 +39,15 @@ module Post =
             
                 let container = container Database.name Partition.registration
 
-                let request : RegistrationRequestEntity = {
+                let registration : RegistrationRequestEntity = {
                     PartitionKey = Partition.registration
                     id = Guid.NewGuid() |> string
                     RegistrationRequest = v
                 }
 
-                match! container.UpsertItemAsync<RegistrationRequestEntity>(request) |> Async.AwaitTask with
+                match! container.UpsertItemAsync<RegistrationRequestEntity>(registration) |> Async.AwaitTask with
                 | response when response.StatusCode = HttpStatusCode.OK ->
-                    return Ok { id = request.id; Request = v; Timestamp = DateTime.UtcNow }
+                    return Ok { id = registration.id; Request = v; Timestamp = DateTime.UtcNow }
 
                 | response -> return Error (response.StatusCode.ToString())
             }

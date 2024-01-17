@@ -1,4 +1,4 @@
-﻿namespace BillableSubscription.DataGateway.Redis
+﻿namespace BeachMobile.BillableSubscription.DataGateway.Redis
 
 open System
 open System.Net

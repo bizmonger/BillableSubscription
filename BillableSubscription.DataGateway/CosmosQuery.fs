@@ -1,4 +1,4 @@
-﻿namespace BillableSubscription.DataGateway.Cosmos
+﻿namespace BeachMobile.BillableSubscription.DataGateway.Cosmos
 
 open Microsoft.Azure.Cosmos
 open BeachMobile.BillableSubscription.Language

@@ -1,4 +1,4 @@
-﻿namespace BillableSubscription.DataGateway.Redis
+﻿namespace BeachMobile.DataGateway.Redis
 
 open System.Collections.Generic
 open Newtonsoft.Json
