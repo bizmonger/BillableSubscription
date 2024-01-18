@@ -18,8 +18,13 @@ module Get =
             let response = cache.StringGet(v.Registration.id)
             
             match response.HasValue with
-            | false -> return Ok None
-            | true  -> return Ok (response |> JsonConvert.DeserializeObject<RegistrationStatus> |> Some)
+            | false -> 
+                do! connection.CloseAsync() |> Async.AwaitTask
+                return Ok None
+
+            | true  ->
+                do! connection.CloseAsync() |> Async.AwaitTask
+                return Ok (response |> JsonConvert.DeserializeObject<RegistrationStatus> |> Some)
         }
 
     let paymentHistory : GetPaymentHistory = 
@@ -31,6 +36,11 @@ module Get =
             let response = cache.StringGet(v)
             
             match response.HasValue with
-            | false -> return Ok []
-            | true  -> return Ok (response |> JsonConvert.DeserializeObject<SuccessfulPayment seq>)
+            | false ->
+                do! connection.CloseAsync() |> Async.AwaitTask
+                return Ok []
+
+            | true  ->
+                do! connection.CloseAsync() |> Async.AwaitTask
+                return Ok (response |> JsonConvert.DeserializeObject<SuccessfulPayment seq>)
         }
