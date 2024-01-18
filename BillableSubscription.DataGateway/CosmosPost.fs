@@ -26,7 +26,7 @@ module Post =
 
                 match! container.UpsertItemAsync<RegistrationRequestEntity>(registration) |> Async.AwaitTask with
                 | response when response.StatusCode = HttpStatusCode.OK ->
-                    return Ok { id = registration.id; Request = v; Timestamp = DateTime.UtcNow }
+                    return Ok { id= registration.id; Request= v; Timestamp= DateTime.UtcNow }
 
                 | response -> return Error (response.StatusCode.ToString())
             }
@@ -47,7 +47,7 @@ module Post =
 
                 match! container.UpsertItemAsync<PaymentRequestEntity>(request) |> Async.AwaitTask with
                 | response when response.StatusCode = HttpStatusCode.OK -> 
-                    return Ok { Payment   = v; Timestamp = DateTime.UtcNow }
+                    return Ok { Payment= v; Timestamp= DateTime.UtcNow }
 
                 | response -> return Error (response.StatusCode.ToString())
             }

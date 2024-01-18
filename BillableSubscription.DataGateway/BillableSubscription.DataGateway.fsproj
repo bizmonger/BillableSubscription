@@ -6,8 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="RedisConfiguration.fs" />
     <Compile Include="Entities.fs" />
+    <Compile Include="RedisConfiguration.fs" />
     <Compile Include="CosmosConfiguration.fs" />
     <Compile Include="CosmosPost.fs" />
     <Compile Include="CosmosQuery.fs" />

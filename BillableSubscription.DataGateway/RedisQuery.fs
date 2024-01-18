@@ -11,10 +11,10 @@ module Get =
 
         fun v -> async { 
 
-                let! connection = ConnectionMultiplexer.ConnectAsync(ConnectionString.Instance) |> Async.AwaitTask
-                let cache = connection.GetDatabase()
-                let result = cache.StringGet("someKey")
-                return Error ""
+            let! connection = ConnectionMultiplexer.ConnectAsync(ConnectionString.Instance) |> Async.AwaitTask
+            let cache = connection.GetDatabase()
+            let result = cache.StringGet("someKey")
+            return Error ""
         }
 
     let paymentHistory : GetPaymentHistory = 
