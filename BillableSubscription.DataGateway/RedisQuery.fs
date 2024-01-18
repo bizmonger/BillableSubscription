@@ -14,8 +14,8 @@ module Get =
         fun v -> async { 
 
             let! connection = ConnectionMultiplexer.ConnectAsync(ConnectionString.Instance) |> Async.AwaitTask
-            let cache = connection.GetDatabase()
-            let response = cache.StringGet(v.Registration.id)
+            let cache       = connection.GetDatabase()
+            let response    = cache.StringGet(v.id)
             
             match response.HasValue with
             | false -> 
@@ -38,9 +38,9 @@ module Get =
             match response.HasValue with
             | false ->
                 do! connection.CloseAsync() |> Async.AwaitTask
-                return Ok []
+                return Ok None
 
             | true  ->
                 do! connection.CloseAsync() |> Async.AwaitTask
-                return Ok (response |> JsonConvert.DeserializeObject<SuccessfulPayment seq>)
+                return Ok (response |> JsonConvert.DeserializeObject<SuccessfulPayment seq> |> Some)
         }

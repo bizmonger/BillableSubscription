@@ -9,13 +9,13 @@ open BeachMobile.BillableSubscription.DataGateway.Cosmos.Database
 
 module Get =
 
-    let subscription : GetRegistrationStatus =
+    let status : GetRegistrationStatus =
 
         fun v -> async { 
 
             let container = container Database.name Partition.registration
 
-            match! container.ReadItemAsync<RegistrationStatusEntity>(v.Registration.id, PartitionKey(Partition.registrationStatus)) |> Async.AwaitTask with
+            match! container.ReadItemAsync<RegistrationStatusEntity>(v.id, PartitionKey(Partition.registrationStatus)) |> Async.AwaitTask with
             | response when response.StatusCode = System.Net.HttpStatusCode.OK -> 
                 return Ok (Some response.Resource.Status)
             | _ -> return Error "Failed to retrieve registration status"
@@ -29,6 +29,6 @@ module Get =
 
             match! container.ReadItemAsync<PaymentHistoryEntity>(v, PartitionKey(Partition.paymentHistory)) |> Async.AwaitTask with
             | response when response.StatusCode = System.Net.HttpStatusCode.OK -> 
-                return Ok response.Resource.Payments
+                return Ok (Some response.Resource.Payments)
             | _ -> return Error "Failed to retrieve payment history"
         }
