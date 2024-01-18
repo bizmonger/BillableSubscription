@@ -10,27 +10,6 @@ open BeachMobile.BillableSubscription.DataGateway.Cosmos.Database
 
 module Post =
 
-    let Payment : SubmitPayment = 
-    
-        fun v ->
-
-            async {
-            
-                let container = container Database.name Partition.payments
-
-                let request : PaymentRequestEntity = {
-                    PartitionKey = Partition.payments
-                    id = Guid.NewGuid() |> string
-                    PaymentRequest = v
-                }
-
-                match! container.UpsertItemAsync<PaymentRequestEntity>(request) |> Async.AwaitTask with
-                | response when response.StatusCode = HttpStatusCode.OK -> 
-                    return Ok { Payment   = v; Timestamp = DateTime.UtcNow }
-
-                | response -> return Error (response.StatusCode.ToString())
-            }
-
     let Registration : RequestRegistration = 
     
         fun v ->
@@ -48,6 +27,27 @@ module Post =
                 match! container.UpsertItemAsync<RegistrationRequestEntity>(registration) |> Async.AwaitTask with
                 | response when response.StatusCode = HttpStatusCode.OK ->
                     return Ok { id = registration.id; Request = v; Timestamp = DateTime.UtcNow }
+
+                | response -> return Error (response.StatusCode.ToString())
+            }
+
+    let Payment : SubmitPayment = 
+    
+        fun v ->
+
+            async {
+            
+                let container = container Database.name Partition.payments
+
+                let request : PaymentRequestEntity = {
+                    PartitionKey = Partition.payments
+                    id = Guid.NewGuid() |> string
+                    PaymentRequest = v
+                }
+
+                match! container.UpsertItemAsync<PaymentRequestEntity>(request) |> Async.AwaitTask with
+                | response when response.StatusCode = HttpStatusCode.OK -> 
+                    return Ok { Payment   = v; Timestamp = DateTime.UtcNow }
 
                 | response -> return Error (response.StatusCode.ToString())
             }

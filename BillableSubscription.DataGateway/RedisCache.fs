@@ -11,27 +11,44 @@ module Msg =
 
 type Cache(connectionString:string) =
 
+    let mutable connection : ConnectionMultiplexer option = None
     let mutable cache : IDatabase option = None
 
     member x.Connect() : Async<Result<unit, ErrorDescription>> =
         
         async {
-            let! connection = ConnectionMultiplexer.ConnectAsync(connectionString) |> Async.AwaitTask
-            cache <- Some <| connection.GetDatabase()
-            return Ok()
+            match! ConnectionMultiplexer.ConnectAsync(connectionString) |> Async.AwaitTask with
+            | conn when conn <> null -> connection <- Some conn
+                                        cache <- Some <| conn.GetDatabase()
+                                        return Ok()
+
+            | _ -> return Error "Failed to establish Redis connection"
+        }
+
+    member x.Disconnect() : Async<Result<unit, ErrorDescription>> =
+        
+        async {
+            match connection with
+            | None -> return Ok()
+            | Some conn -> do! conn.CloseAsync() |> Async.AwaitTask
+                           connection <- None
+                           cache      <- None
+                           return Ok()
         }
 
     member x.Get<'result> (key:Key) : Async<Result<'result, ErrorDescription>> =
 
         async {
             
-            match cache with
-            | None   -> return Error Msg.noConnectionExists
-            | Some v ->
+            match connection,cache with
+            | None,None   -> return Error Msg.noConnectionExists
+            | Some _, Some v ->
                 let! result = v.StringGetAsync(key) |> Async.AwaitTask
                 let hydated = JsonConvert.DeserializeObject<'result> result
 
                 return Ok hydated
+
+            | _ -> return Error "Invalid connection or cache state"
         }
 
     member x.Post<'value> (kv:KeyValuePair<Key,'value>) : Async<Result<unit, ErrorDescription>> =

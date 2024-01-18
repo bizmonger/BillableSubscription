@@ -16,7 +16,7 @@ let ``add registration`` () =
     async {
     
         // Setup
-        ConnectionString.Instance <- ConfigurationManager.AppSettings["connectionString"];
+        ConnectionString.Instance <- ConfigurationManager.AppSettings["cosmosConnectionString"];
 
         // Test
         match! someRegistration |> Post.Registration with
