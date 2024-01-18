@@ -11,8 +11,12 @@ module Query =
             
             match! Redis.Get.status v with
             | Error msg   -> return Error msg
-            | Ok None     -> return! Cosmos.Get.status v
             | Ok (Some r) -> return Ok (Some r)
+            | Ok None -> 
+
+                match! Redis.Post.registration v with
+                | Error msg -> return Error msg
+                | Ok r      -> return Ok (Some r)
         }
 
     let paymentHistory : GetPaymentHistory = 
@@ -21,8 +25,20 @@ module Query =
         
             match! Redis.Get.paymentHistory v with
             | Error msg   -> return Error msg
-            | Ok r -> 
-                 match r with
-                 | None   -> return! Cosmos.Get.paymentHistory v
-                 | Some p -> return Ok (Some p)
+            | Ok (Some r) -> return Ok (Some r)
+            | Ok None -> 
+
+                match! Cosmos.Get.paymentHistory v with
+                | Error msg -> return Error msg
+                | Ok None   -> 
+                
+                    match! Redis.Post.paymentHistory { SubscriptionId=v; Payments= Seq.empty} with
+                    | Error msg -> return Error msg
+                    | Ok ()     -> return Ok None
+
+                | Ok (Some r) -> 
+                
+                    match! Redis.Post.paymentHistory {SubscriptionId= v; Payments= r} with
+                    | Error msg -> return Error msg
+                    | Ok ()     -> return Ok (Some r)
         }

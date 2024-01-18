@@ -26,7 +26,17 @@ module Post =
 
                 match! container.UpsertItemAsync<RegistrationRequestEntity>(registration) |> Async.AwaitTask with
                 | response when response.StatusCode = HttpStatusCode.OK ->
-                    return Ok { id= registration.id; Request= v; Timestamp= DateTime.UtcNow }
+
+                    let receipt : RegistrationReceipt = {
+                        id = registration.id
+                        Request   = v
+                        Timestamp = DateTime.UtcNow
+                    }
+                    
+                    return Ok { Registration = receipt
+                                Status       = "Pending"
+                                Timestamp    = receipt.Timestamp
+                              }
 
                 | response -> return Error (response.StatusCode.ToString())
             }

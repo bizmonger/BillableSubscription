@@ -75,6 +75,6 @@ module Language =
 
     [<CLIMutable>]
     type PaymentHistory = {
-        SubscriptionId    : SubscriptionId
-        SuccessfulPayment : SuccessfulPayment seq
+        SubscriptionId : SubscriptionId
+        Payments       : SuccessfulPayment seq
     }

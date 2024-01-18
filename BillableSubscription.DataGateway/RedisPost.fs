@@ -29,39 +29,37 @@ module Post =
             | false -> Error Msg.failedSetexpiration
             | true  -> Ok ()
 
-    let registration : RequestRegistration =
+    let registration (entity:RegistrationReceipt) =
 
-        fun v ->
-            async {
+        async {
         
-                let! connection = ConnectionMultiplexer.ConnectAsync(ConnectionString.Instance) |> Async.AwaitTask
-                let cache = connection.GetDatabase()
+            let! connection = ConnectionMultiplexer.ConnectAsync(ConnectionString.Instance) |> Async.AwaitTask
+            let cache = connection.GetDatabase()
+                
+            let json = JsonConvert.SerializeObject(entity)
+                
+            match set cache entity.id json with
+            | Error msg -> 
+                do! connection.CloseAsync() |> Async.AwaitTask
+                return Error msg
 
-                let data : RegistrationRequestEntity = {
-                    id = Guid.NewGuid() |> string
-                    PartitionKey = "Registration"
-                    RegistrationRequest = v
+            | Ok () ->
+
+                do! connection.CloseAsync() |> Async.AwaitTask
+
+                let receipt : RegistrationReceipt = {
+                    id        = entity.id
+                    Request   = entity.Request
+                    Timestamp = DateTime.UtcNow
                 }
-                
-                let json = JsonConvert.SerializeObject(data)
-                
-                match set cache data.id json with
-                | Error msg -> 
-                    do! connection.CloseAsync() |> Async.AwaitTask
-                    return Error msg
-
-                | Ok () ->
-
-                    do! connection.CloseAsync() |> Async.AwaitTask
-
-                    return Ok {
-                        id = Guid.NewGuid() |> string
-                        Request   = v
-                        Timestamp = DateTime.UtcNow
-                    }                
+                    
+                return Ok { Registration = receipt
+                            Status       = "Pending"
+                            Timestamp    = receipt.Timestamp
+                            }
             }
 
-    let Payment : SubmitPayment = 
+    let payment : SubmitPayment = 
     
         fun v ->
             async {
@@ -86,3 +84,22 @@ module Post =
                     do! connection.CloseAsync() |> Async.AwaitTask
                     return Ok { Payment= v; Timestamp= DateTime.UtcNow }
             }
+
+    let paymentHistory (v:PaymentHistory) = 
+    
+        async {
+        
+            let! connection = ConnectionMultiplexer.ConnectAsync(ConnectionString.Instance) |> Async.AwaitTask
+            let cache = connection.GetDatabase()
+
+            let json = JsonConvert.SerializeObject(v)
+                
+            match set cache $"PaymentHistory:{v.SubscriptionId}" json with
+            | Error msg -> 
+                do! connection.CloseAsync() |> Async.AwaitTask
+                return Error msg
+
+            | Ok () ->
+                do! connection.CloseAsync() |> Async.AwaitTask
+                return Ok()
+        }
