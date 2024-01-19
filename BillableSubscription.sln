@@ -7,9 +7,13 @@ Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "BillableSubscription", "Bil
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "BillableSubscription.DataGateway", "BillableSubscription.DataGateway\BillableSubscription.DataGateway.fsproj", "{00D70719-D186-45E4-A6B2-BCC4E53B0C5B}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "BillableSubscription.Tests", "BillableSubscription.Tests\BillableSubscription.Tests.fsproj", "{72A0CAE4-8341-463F-AE76-5755AC05BDAF}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "BillableSubscription.Tests", "BillableSubscription.Tests\BillableSubscription.Tests.fsproj", "{72A0CAE4-8341-463F-AE76-5755AC05BDAF}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "BillableSubscription.TestAPI", "BillableSubscription.TestAPI\BillableSubscription.TestAPI.fsproj", "{240DF7CA-B508-4222-A8C5-D468E599F8D5}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "BillableSubscription.TestAPI", "BillableSubscription.TestAPI\BillableSubscription.TestAPI.fsproj", "{240DF7CA-B508-4222-A8C5-D468E599F8D5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BilliableSubscription.Server", "BilliableSubscription.Server\BilliableSubscription.Server.csproj", "{54AF4073-A02B-4469-99DA-32511D47902C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{FD6B0C18-D8A7-4B81-BB1B-A64399605CC7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,9 +37,17 @@ Global
 		{240DF7CA-B508-4222-A8C5-D468E599F8D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{240DF7CA-B508-4222-A8C5-D468E599F8D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{240DF7CA-B508-4222-A8C5-D468E599F8D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54AF4073-A02B-4469-99DA-32511D47902C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54AF4073-A02B-4469-99DA-32511D47902C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54AF4073-A02B-4469-99DA-32511D47902C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54AF4073-A02B-4469-99DA-32511D47902C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{72A0CAE4-8341-463F-AE76-5755AC05BDAF} = {FD6B0C18-D8A7-4B81-BB1B-A64399605CC7}
+		{240DF7CA-B508-4222-A8C5-D468E599F8D5} = {FD6B0C18-D8A7-4B81-BB1B-A64399605CC7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6206A898-5F97-446B-ADC2-A014DF23939A}

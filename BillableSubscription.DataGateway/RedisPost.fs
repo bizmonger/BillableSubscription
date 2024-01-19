@@ -7,7 +7,6 @@ open BeachMobile.BillableSubscription.Operations
 open BeachMobile.BillableSubscription.Entities
 open BeachMobile.BillableSubscription.DataGateway.Cosmos
 open StackExchange.Redis
-open Configuration
 
 // Documentation:
 // https://medium.com/@sadigrzazada20/getting-started-with-redis-in-c-using-stackexchange-redis-353a9d65a136
@@ -18,11 +17,6 @@ module KeyFor =
     let payment(subscriptionId)        = $"Payment:{subscriptionId}"
     let registration(subscriptionId)   = $"Registration:{subscriptionId}"
     let paymentHistory(subscriptionId) = $"PaymentHistory:{subscriptionId}"
-
-module Msg =
-
-    let failedCacheItemRegistration = "Failed to register cache"
-    let failedSetexpiration         = "Failed to set cache key expiration"
 
 module Post =
 

@@ -1,4 +1,4 @@
-﻿namespace BeachMobile.BillableSubscription.DataGateway.Sync
+﻿namespace BeachMobile.BillableSubscription.DataGateway.SyncLogic
 
 open BeachMobile.BillableSubscription.Language
 open BeachMobile.BillableSubscription.Operations

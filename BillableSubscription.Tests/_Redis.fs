@@ -3,9 +3,10 @@ module BillableSubscription.Redis.Tests
 open System.Configuration
 open NUnit.Framework
 open BeachMobile.BillableSubscription.TestAPI.Mock
-open BeachMobile.BillableSubscription.DataGateway.Redis.Configuration
 open BeachMobile.BillableSubscription.DataGateway.Redis
 open StackExchange.Redis
+
+type ConnectionString = BeachMobile.BillableSubscription.DataGateway.Redis.ConnectionString
 
 [<Ignore("")>]
 [<Test>]

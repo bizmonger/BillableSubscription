@@ -3,7 +3,6 @@
 open System
 open Newtonsoft.Json
 open StackExchange.Redis
-open Configuration
 open BeachMobile.BillableSubscription.Operations
 open BeachMobile.BillableSubscription.Language
 

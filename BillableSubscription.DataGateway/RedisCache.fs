@@ -1,15 +1,20 @@
-﻿namespace BeachMobile.DataGateway.Redis
+﻿namespace BeachMobile.BillableSubscription.DataGateway.Redis
 
 open System.Collections.Generic
 open Newtonsoft.Json
 open StackExchange.Redis
 open BeachMobile.BillableSubscription.Language
 
+type ConnectionString() = static member val Instance = "" with get,set
+
 module Msg =
 
     let noConnectionExists = "No Redis server connection"
     let invalidCacheState  = "Invalid cache state"
     let failedToCache key  = $"Failed to cache: {key}"
+
+    let failedCacheItemRegistration = "Failed to register cache"
+    let failedSetexpiration         = "Failed to set cache key expiration"
 
 type Cache(connectionString:string) =
 
