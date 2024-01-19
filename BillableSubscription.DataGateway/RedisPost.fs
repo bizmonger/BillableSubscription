@@ -26,7 +26,7 @@ module Msg =
 
 module Post =
 
-    let set(cache:IDatabase) (key:string) (value:string) =
+    let private register(cache:IDatabase) (key:string) (value:string) =
 
         match cache.StringSet(key, value) with
         | false -> Error Msg.failedCacheItemRegistration
@@ -45,7 +45,7 @@ module Post =
                 
             let json = JsonConvert.SerializeObject(entity)
                 
-            match set cache entity.id json with
+            match register cache entity.id json with
             | Error msg -> 
                 do! connection.CloseAsync() |> Async.AwaitTask
                 return Error msg
@@ -82,7 +82,7 @@ module Post =
 
                 let json = JsonConvert.SerializeObject(data)
                 
-                match set cache (KeyFor.payment data.id) json with
+                match register cache (KeyFor.payment data.id) json with
                 | Error msg -> 
                     do! connection.CloseAsync() |> Async.AwaitTask
                     return Error msg
@@ -101,7 +101,7 @@ module Post =
 
             let json = JsonConvert.SerializeObject(v)
                 
-            match set cache (KeyFor.paymentHistory v.SubscriptionId) json with
+            match register cache (KeyFor.paymentHistory v.SubscriptionId) json with
             | Error msg -> 
                 do! connection.CloseAsync() |> Async.AwaitTask
                 return Error msg
