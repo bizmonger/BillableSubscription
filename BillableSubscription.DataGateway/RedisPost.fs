@@ -5,12 +5,19 @@ open Newtonsoft.Json
 open BeachMobile.BillableSubscription.Language
 open BeachMobile.BillableSubscription.Operations
 open BeachMobile.BillableSubscription.Entities
+open BeachMobile.BillableSubscription.DataGateway.Cosmos
 open StackExchange.Redis
 open Configuration
 
 // Documentation:
 // https://medium.com/@sadigrzazada20/getting-started-with-redis-in-c-using-stackexchange-redis-353a9d65a136
 // https://stackoverflow.com/questions/60927540/add-expiry-to-redis-cache
+
+module KeyFor =
+    
+    let payment(subscriptionId)        = $"Payment:{subscriptionId}"
+    let registration(subscriptionId)   = $"Registration:{subscriptionId}"
+    let paymentHistory(subscriptionId) = $"PaymentHistory:{subscriptionId}"
 
 module Msg =
 
@@ -56,7 +63,7 @@ module Post =
                 return Ok { Registration = receipt
                             Status       = "Pending"
                             Timestamp    = receipt.Timestamp
-                            }
+                          }
             }
 
     let payment : SubmitPayment = 
@@ -69,13 +76,13 @@ module Post =
 
                 let data : PaymentRequestEntity = {
                     id = Guid.NewGuid() |> string
-                    PartitionKey = "Payments"
+                    PartitionKey   = Partition.payments
                     PaymentRequest = v
                 }
 
                 let json = JsonConvert.SerializeObject(data)
                 
-                match set cache $"Payment:{data.id}" json with
+                match set cache (KeyFor.payment data.id) json with
                 | Error msg -> 
                     do! connection.CloseAsync() |> Async.AwaitTask
                     return Error msg
@@ -92,9 +99,9 @@ module Post =
             let! connection = ConnectionMultiplexer.ConnectAsync(ConnectionString.Instance) |> Async.AwaitTask
             let cache = connection.GetDatabase()
 
-            let json  = JsonConvert.SerializeObject(v)
+            let json = JsonConvert.SerializeObject(v)
                 
-            match set cache $"PaymentHistory:{v.SubscriptionId}" json with
+            match set cache (KeyFor.paymentHistory v.SubscriptionId) json with
             | Error msg -> 
                 do! connection.CloseAsync() |> Async.AwaitTask
                 return Error msg
