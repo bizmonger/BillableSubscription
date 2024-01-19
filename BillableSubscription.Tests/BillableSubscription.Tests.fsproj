@@ -17,7 +17,8 @@
     <Content Include="App.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Compile Include="_Integration.fs" />
+    <Compile Include="_Redis.fs" />
+    <Compile Include="_Cosmos.fs" />
     <EmbeddedResource Include="Program.fs" />
   </ItemGroup>
 

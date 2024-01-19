@@ -1,5 +1,6 @@
 ﻿namespace BeachMobile.BillableSubscription.TestAPI
 
+open System
 open BeachMobile.BillableSubscription.Language
 
 module Mock =
@@ -13,4 +14,10 @@ module Mock =
         Phone     = "some phone"
         Email     = "some email"
         Plan      = "some plan"
+    }
+
+    let someRegistrationReceipt : RegistrationReceipt = {
+        id = someRowKey
+        Request   = someRegistration
+        Timestamp = DateTime.UtcNow
     }

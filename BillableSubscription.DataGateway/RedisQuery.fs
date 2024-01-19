@@ -32,7 +32,7 @@ module Get =
         fun v -> async { 
 
             let! connection = ConnectionMultiplexer.ConnectAsync(ConnectionString.Instance) |> Async.AwaitTask
-            let cache = connection.GetDatabase()
+            let cache    = connection.GetDatabase()
             let response = cache.StringGet(v)
             
             match response.HasValue with

@@ -10,7 +10,7 @@ open BeachMobile.BillableSubscription.DataGateway.Cosmos.Database
 
 module Post =
 
-    let Registration : RequestRegistration = 
+    let registration : RequestRegistration = 
     
         fun v ->
 
@@ -41,7 +41,7 @@ module Post =
                 | response -> return Error (response.StatusCode.ToString())
             }
 
-    let Payment : SubmitPayment = 
+    let payment : SubmitPayment = 
     
         fun v ->
 
