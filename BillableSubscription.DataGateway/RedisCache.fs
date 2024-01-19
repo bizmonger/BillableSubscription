@@ -8,6 +8,8 @@ open BeachMobile.BillableSubscription.Language
 module Msg =
 
     let noConnectionExists = "No Redis server connection"
+    let invalidCacheState  = "Invalid cache state"
+    let failedToCache key  = $"Failed to cache: {key}"
 
 type Cache(connectionString:string) =
 
@@ -22,7 +24,7 @@ type Cache(connectionString:string) =
                                         cache <- Some <| conn.GetDatabase()
                                         return Ok()
 
-            | _ -> return Error "Failed to establish Redis connection"
+            | _ -> return Error Msg.noConnectionExists
         }
 
     member x.Disconnect() : Async<Result<unit, ErrorDescription>> =
@@ -48,7 +50,7 @@ type Cache(connectionString:string) =
 
                 return Ok hydated
 
-            | _ -> return Error "Invalid connection or cache state"
+            | _ -> return Error Msg.invalidCacheState
         }
 
     member x.Post<'value> (kv:KeyValuePair<Key,'value>) : Async<Result<unit, ErrorDescription>> =
@@ -63,6 +65,6 @@ type Cache(connectionString:string) =
                 let kv'   = KeyValuePair<RedisKey,RedisValue>(RedisKey(kv.Key), RedisValue(value))
 
                 match! v.StringSetAsync([|kv'|]) |> Async.AwaitTask with
-                | false -> return Error $"Failed to cache: {kv.Key}"
+                | false -> return Error (Msg.failedToCache kv.Key)
                 | true  -> return Ok()
         }

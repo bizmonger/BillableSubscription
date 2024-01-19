@@ -16,9 +16,11 @@ module Database =
 
     let name = "beachmobile-db"
 
-    let container (db:string) (partitionKey:string) =
+    module Container =
 
-        let client    = new CosmosClient(ConnectionString.Instance, DefaultAzureCredential())
-        let database  = client.GetDatabase(db)
-        let container = database.GetContainer(partitionKey)
-        container
+        let get (db:string) (partitionKey:string) =
+
+            let client    = new CosmosClient(ConnectionString.Instance, DefaultAzureCredential())
+            let database  = client.GetDatabase(db)
+            let container = database.GetContainer(partitionKey)
+            container

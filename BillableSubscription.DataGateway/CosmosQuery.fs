@@ -13,7 +13,7 @@ module Get =
 
         fun v -> async { 
 
-            let container = container Database.name Partition.registration
+            let container = Container.get Database.name Partition.registration
 
             match! container.ReadItemAsync<RegistrationStatusEntity>(v.id, PartitionKey(Partition.registrationStatus)) |> Async.AwaitTask with
             | response when response.StatusCode = System.Net.HttpStatusCode.OK -> 
@@ -25,7 +25,7 @@ module Get =
 
         fun v -> async {
 
-            let container = container Database.name Partition.paymentHistory
+            let container = Container.get Database.name Partition.paymentHistory
 
             match! container.ReadItemAsync<PaymentHistoryEntity>(v, PartitionKey(Partition.paymentHistory)) |> Async.AwaitTask with
             | response when response.StatusCode = System.Net.HttpStatusCode.OK -> 
