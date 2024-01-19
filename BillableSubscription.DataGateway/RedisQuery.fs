@@ -1,6 +1,5 @@
 ﻿namespace BeachMobile.BillableSubscription.DataGateway.Redis
 
-open System
 open Newtonsoft.Json
 open StackExchange.Redis
 open BeachMobile.BillableSubscription.Operations
