@@ -14,7 +14,6 @@
     <Compile Include="RedisCache.fs" />
     <Compile Include="RedisPost.fs" />
     <Compile Include="RedisQuery.fs" />
-    <Compile Include="SyncPost.fs" />
     <Compile Include="SyncQuery.fs" />
   </ItemGroup>
 

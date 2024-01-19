@@ -75,7 +75,7 @@ module Post =
 
                 let json = JsonConvert.SerializeObject(data)
                 
-                match set cache data.id json with
+                match set cache $"Payment:{data.id}" json with
                 | Error msg -> 
                     do! connection.CloseAsync() |> Async.AwaitTask
                     return Error msg
@@ -92,7 +92,7 @@ module Post =
             let! connection = ConnectionMultiplexer.ConnectAsync(ConnectionString.Instance) |> Async.AwaitTask
             let cache = connection.GetDatabase()
 
-            let json = JsonConvert.SerializeObject(v)
+            let json  = JsonConvert.SerializeObject(v)
                 
             match set cache $"PaymentHistory:{v.SubscriptionId}" json with
             | Error msg -> 
