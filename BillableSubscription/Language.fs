@@ -10,6 +10,7 @@ module Language =
 
     [<CLIMutable>]
     type RegistrationRequest = {
+        TenantId  : string
         FirstName : string
         LastName  : string
         Phone     : string
@@ -40,7 +41,7 @@ module Language =
     [<CLIMutable>]
     type Subscription = {
         Registration : RegistrationReceipt
-        Plan         : BillablePlan
+        BillablePlan : BillablePlan
         Started      : DateTime
     }
 

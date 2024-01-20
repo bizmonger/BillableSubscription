@@ -19,7 +19,6 @@ module Post =
 
                 let item : RegistrationRequestEntity = {
                     id = Guid.NewGuid() |> string
-                    PartitionId = "hello-world"
                     RegistrationRequest = v
                 }
 
@@ -35,18 +34,21 @@ module Post =
                     Timestamp    = DateTime.UtcNow
                 }
 
+                let registration = status.Registration.Request
+
                 let status : RegistrationStatusEntity = {
                     id = item.id
+                    PartitionId = $"{registration.TenantId}:{registration.Plan}"
                     Status = status
                 }
 
-                match! container.CreateItemAsync<RegistrationStatusEntity>(status, Microsoft.Azure.Cosmos.PartitionKey(item.PartitionId)) |> Async.AwaitTask with
+                match! container.CreateItemAsync<RegistrationStatusEntity>(status, Microsoft.Azure.Cosmos.PartitionKey(status.PartitionId)) |> Async.AwaitTask with
                 | response when response.StatusCode = HttpStatusCode.Created ->
                         
                     return Ok { Registration = receipt
                                 Status       = "Pending"
                                 Timestamp    = receipt.Timestamp
-                                }
+                              }
 
                 | response -> return Error (response.StatusCode.ToString())
 
@@ -59,17 +61,22 @@ module Post =
     
         fun v -> async {
             
-            let container = Container.get Database.name Container.payments
+            try
+                let container = Container.get Database.name Container.payments
 
-            let request : PaymentRequestEntity = {
-                id = Guid.NewGuid() |> string
-                PartitionId = "hellow-world"
-                PaymentRequest = v
-            }
+                let request : PaymentRequestEntity = {
+                    id = Guid.NewGuid() |> string
+                    PartitionId = v.Subscription.BillablePlan.Plan.Name
+                    PaymentRequest = v
+                }
 
-            match! container.UpsertItemAsync<PaymentRequestEntity>(request) |> Async.AwaitTask with
-            | response when response.StatusCode = HttpStatusCode.OK -> 
-                return Ok { Payment= v; Timestamp= DateTime.UtcNow }
+                match! container.UpsertItemAsync<PaymentRequestEntity>(request) |> Async.AwaitTask with
+                | response when response.StatusCode = HttpStatusCode.Created -> 
+                    return Ok { Payment= v; Timestamp= DateTime.UtcNow }
 
-            | response -> return Error (response.StatusCode.ToString())
+                | response -> return Error (response.StatusCode.ToString())
+            
+            with ex -> 
+                let msg = ex.GetBaseException().Message
+                return Error msg
         }

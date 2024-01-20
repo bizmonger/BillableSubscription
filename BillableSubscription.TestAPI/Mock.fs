@@ -6,9 +6,10 @@ open BeachMobile.BillableSubscription.Language
 module Mock =
 
     let someRowKey = "some_row_key"
-    let somePartitionKey = "id"
+    let someHost   = "some business"
 
     let someRegistration : RegistrationRequest = {
+        TenantId  = "BeachMobile"
         FirstName = "some first name"
         LastName  = "some last name"
         Phone     = "some phone"
@@ -35,7 +36,7 @@ module Mock =
 
     let someSubscription : Subscription = {
         Registration = someRegistrationReceipt
-        Plan         = someBillablePlan
+        BillablePlan         = someBillablePlan
         Started      = DateTime.UtcNow
     }
 

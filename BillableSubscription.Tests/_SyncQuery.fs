@@ -6,7 +6,6 @@ open BeachMobile.BillableSubscription.TestAPI.Mock
 open BeachMobile.BillableSubscription.DataGateway
 open BeachMobile.BillableSubscription.DataGateway.Cosmos
 
-//[<Ignore("")>]
 [<Test>]
 let ``Sync save registration`` () =
 

@@ -7,13 +7,13 @@ module Entities =
     [<CLIMutable>]
     type RegistrationRequestEntity = {
         id : string
-        PartitionId : string
         RegistrationRequest : RegistrationRequest
     }
 
     [<CLIMutable>]
     type RegistrationStatusEntity = {
         id : string
+        PartitionId : string
         Status : RegistrationStatus
     }
 
