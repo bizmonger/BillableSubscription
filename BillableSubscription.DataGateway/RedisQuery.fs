@@ -14,7 +14,7 @@ module Get =
             try
                 let! connection = ConnectionMultiplexer.ConnectAsync(ConnectionString.Instance) |> Async.AwaitTask
                 let cache       = connection.GetDatabase()
-                let response    = cache.StringGet(KeyFor.registration v.id)
+                let response    = cache.StringGet(KeyFor.registrationStatus v.id)
             
                 match response.HasValue with
                 | false -> 

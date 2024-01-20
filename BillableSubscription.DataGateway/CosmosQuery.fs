@@ -6,6 +6,7 @@ open BeachMobile.BillableSubscription.Operations
 open BeachMobile.BillableSubscription.Entities
 open BeachMobile.BillableSubscription.DataGateway.Cosmos
 open BeachMobile.BillableSubscription.DataGateway.Cosmos.Database
+open BeachMobile.BillableSubscription.DataGateway.Redis
 
 module Get =
 
@@ -16,7 +17,7 @@ module Get =
             try
                 let container = Container.get Database.name Container.registration
 
-                match! container.ReadItemAsync<RegistrationStatusEntity>(v.id, PartitionKey(KeyFor.)) |> Async.AwaitTask with
+                match! container.ReadItemAsync<RegistrationStatusEntity>(v.id, PartitionKey(KeyFor.registrationStatus v.id)) |> Async.AwaitTask with
                 | response when response.StatusCode = System.Net.HttpStatusCode.OK -> 
                     return Ok (Some response.Resource.Status)
                 | _ -> return Error "Failed to retrieve registration status"

@@ -23,14 +23,25 @@ module Post =
                     RegistrationRequest = v
                 }
 
-                match! container.CreateItemAsync<RegistrationRequestEntity>(item, Microsoft.Azure.Cosmos.PartitionKey(item.PartitionId)) |> Async.AwaitTask with
-                | response when response.StatusCode = HttpStatusCode.Created ->
+                let receipt : RegistrationReceipt = {
+                    id = item.id
+                    Request   = v
+                    Timestamp = DateTime.UtcNow
+                }
 
-                    let receipt : RegistrationReceipt = {
-                        id = item.id
-                        Request   = v
-                        Timestamp = DateTime.UtcNow
-                    }
+                let status : RegistrationStatus = {
+                    Registration = receipt
+                    Status       = "pending"
+                    Timestamp    = DateTime.UtcNow
+                }
+
+                let status : RegistrationStatusEntity = {
+                    id = item.id
+                    Status = status
+                }
+
+                match! container.CreateItemAsync<RegistrationStatusEntity>(status, Microsoft.Azure.Cosmos.PartitionKey(item.PartitionId)) |> Async.AwaitTask with
+                | response when response.StatusCode = HttpStatusCode.Created ->
                         
                     return Ok { Registration = receipt
                                 Status       = "Pending"

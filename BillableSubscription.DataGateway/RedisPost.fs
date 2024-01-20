@@ -12,12 +12,6 @@ open StackExchange.Redis
 // https://medium.com/@sadigrzazada20/getting-started-with-redis-in-c-using-stackexchange-redis-353a9d65a136
 // https://stackoverflow.com/questions/60927540/add-expiry-to-redis-cache
 
-module KeyFor =
-    
-    let payment(subscriptionId)        = $"Payment:{subscriptionId}"
-    let registration(subscriptionId)   = $"Registration:{subscriptionId}"
-    let paymentHistory(subscriptionId) = $"PaymentHistory:{subscriptionId}"
-
 module Post =
 
     let private register(cache:IDatabase) (key:string) (value:string) =

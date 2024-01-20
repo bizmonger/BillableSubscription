@@ -25,7 +25,7 @@ let ``cache registration`` () =
         | Ok status ->
 
             // Verify
-            let registration = cache.StringGet(KeyFor.registration status.Registration.id)
+            let registration = cache.StringGet(KeyFor.registrationStatus status.Registration.id)
             Assert.That registration.HasValue
 
         // Teardown
