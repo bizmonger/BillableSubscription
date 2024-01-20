@@ -21,3 +21,25 @@ module Mock =
         Request   = someRegistration
         Timestamp = DateTime.UtcNow
     }
+
+    let somePlan : Plan = {
+        Name        = "some plan"
+        Description = "some plan description"
+    }
+
+    let someBillablePlan : BillablePlan = {
+        Plan      = somePlan
+        Price     = 8.99
+        Frequency = "monthly"
+    }
+
+    let someSubscription : Subscription = {
+        Registration = someRegistrationReceipt
+        Plan         = someBillablePlan
+        Started      = DateTime.UtcNow
+    }
+
+    let somePayment : PaymentRequest = {
+        Subscription = someSubscription
+        Amount       = 9.99
+    }

@@ -14,40 +14,45 @@ module Post =
     
         fun v -> async {
             
-            let container = Container.get Database.name Partition.registration
+            try
+                let container = Container.get Database.name Container.registration
 
-            let registration : RegistrationRequestEntity = {
-                PartitionKey = Partition.registration
-                id = Guid.NewGuid() |> string
-                RegistrationRequest = v
-            }
-
-            match! container.UpsertItemAsync<RegistrationRequestEntity>(registration) |> Async.AwaitTask with
-            | response when response.StatusCode = HttpStatusCode.OK ->
-
-                let receipt : RegistrationReceipt = {
-                    id = registration.id
-                    Request   = v
-                    Timestamp = DateTime.UtcNow
+                let item : RegistrationRequestEntity = {
+                    id = Guid.NewGuid() |> string
+                    PartitionId = "hello-world"
+                    RegistrationRequest = v
                 }
-                    
-                return Ok { Registration = receipt
-                            Status       = "Pending"
-                            Timestamp    = receipt.Timestamp
-                            }
 
-            | response -> return Error (response.StatusCode.ToString())
+                match! container.CreateItemAsync<RegistrationRequestEntity>(item, Microsoft.Azure.Cosmos.PartitionKey(item.PartitionId)) |> Async.AwaitTask with
+                | response when response.StatusCode = HttpStatusCode.Created ->
+
+                    let receipt : RegistrationReceipt = {
+                        id = item.id
+                        Request   = v
+                        Timestamp = DateTime.UtcNow
+                    }
+                        
+                    return Ok { Registration = receipt
+                                Status       = "Pending"
+                                Timestamp    = receipt.Timestamp
+                                }
+
+                | response -> return Error (response.StatusCode.ToString())
+
+            with ex -> 
+                let msg = ex.GetBaseException().Message
+                return Error msg       
         }
 
     let payment : SubmitPayment = 
     
         fun v -> async {
             
-            let container = Container.get Database.name Partition.payments
+            let container = Container.get Database.name Container.payments
 
             let request : PaymentRequestEntity = {
-                PartitionKey = Partition.payments
                 id = Guid.NewGuid() |> string
+                PartitionId = "hellow-world"
                 PaymentRequest = v
             }
 

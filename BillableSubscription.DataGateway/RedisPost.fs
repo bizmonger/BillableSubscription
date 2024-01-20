@@ -70,7 +70,7 @@ module Post =
 
                 let data : PaymentRequestEntity = {
                     id = Guid.NewGuid() |> string
-                    PartitionKey   = Partition.payments
+                    PartitionId = "hello-world"
                     PaymentRequest = v
                 }
 

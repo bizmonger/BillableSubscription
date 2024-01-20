@@ -11,18 +11,25 @@ module Get =
 
         fun v -> async { 
 
-            let! connection = ConnectionMultiplexer.ConnectAsync(ConnectionString.Instance) |> Async.AwaitTask
-            let cache       = connection.GetDatabase()
-            let response    = cache.StringGet(v.id)
+            try
+                let! connection = ConnectionMultiplexer.ConnectAsync(ConnectionString.Instance) |> Async.AwaitTask
+                let cache       = connection.GetDatabase()
+                let response    = cache.StringGet(KeyFor.registration v.id)
             
-            match response.HasValue with
-            | false -> 
-                do! connection.CloseAsync() |> Async.AwaitTask
-                return Ok None
+                match response.HasValue with
+                | false -> 
+                    try
+                        do! connection.CloseAsync() |> Async.AwaitTask
+                        return Ok None
+                    with ex -> return Error (ex.GetBaseException().Message)
 
-            | true  ->
-                do! connection.CloseAsync() |> Async.AwaitTask
-                return Ok (response |> JsonConvert.DeserializeObject<RegistrationStatus> |> Some)
+                | true  ->
+                    do! connection.CloseAsync() |> Async.AwaitTask
+                    return Ok (response |> JsonConvert.DeserializeObject<RegistrationStatus> |> Some)
+
+            with ex ->
+                let msg = ex.GetBaseException().Message
+                return Error msg
         }
 
     let paymentHistory : GetPaymentHistory = 

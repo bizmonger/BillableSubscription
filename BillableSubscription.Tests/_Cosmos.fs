@@ -25,7 +25,7 @@ let ``save registration`` () =
         | Ok receipt ->
 
             // Verify
-            let container = Container.get Database.name Partition.registration
+            let container = Container.get Database.name Container.registration
             let response  = container.ReadItemAsync<RegistrationRequestEntity>(someRowKey, PartitionKey(receipt.Registration.id)).Result
 
             Assert.That(response.StatusCode = HttpStatusCode.OK)

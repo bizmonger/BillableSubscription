@@ -5,7 +5,7 @@ open Azure.Identity
 
 type ConnectionString() = static member val Instance = "" with get,set
 
-module Partition =
+module Container =
 
     let registration       = "Registration"
     let registrationStatus = "RegistrationStatus"
@@ -18,9 +18,9 @@ module Database =
 
     module Container =
 
-        let get (db:string) (partitionKey:string) =
+        let get (db:string) (containerId:string) =
 
             let client    = new CosmosClient(ConnectionString.Instance, DefaultAzureCredential())
             let database  = client.GetDatabase(db)
-            let container = database.GetContainer(partitionKey)
+            let container = database.GetContainer(containerId)
             container
