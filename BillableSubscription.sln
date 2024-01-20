@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "BillableSubscription", "BillableSubscription\BillableSubscription.fsproj", "{7EF78EC8-BB98-4B0E-A11B-56A2998DE617}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "BillableSubscription.Specification", "BillableSubscription\BillableSubscription.Specification.fsproj", "{7EF78EC8-BB98-4B0E-A11B-56A2998DE617}"
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "BillableSubscription.DataGateway", "BillableSubscription.DataGateway\BillableSubscription.DataGateway.fsproj", "{00D70719-D186-45E4-A6B2-BCC4E53B0C5B}"
 EndProject
@@ -11,7 +11,7 @@ Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "BillableSubscription.Tests"
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "BillableSubscription.TestAPI", "BillableSubscription.TestAPI\BillableSubscription.TestAPI.fsproj", "{240DF7CA-B508-4222-A8C5-D468E599F8D5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BilliableSubscription.Server", "BilliableSubscription.Server\BilliableSubscription.Server.csproj", "{54AF4073-A02B-4469-99DA-32511D47902C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BilliableSubscription.Server", "BilliableSubscription.Server\BilliableSubscription.Server.csproj", "{54AF4073-A02B-4469-99DA-32511D47902C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{FD6B0C18-D8A7-4B81-BB1B-A64399605CC7}"
 EndProject

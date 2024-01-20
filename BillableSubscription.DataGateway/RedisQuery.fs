@@ -9,7 +9,7 @@ module Get =
 
     let status : GetRegistrationStatus =
 
-        fun v -> async { 
+        fun v -> task { 
 
             try
                 let! connection = ConnectionMultiplexer.ConnectAsync(ConnectionString.Instance) |> Async.AwaitTask
@@ -34,7 +34,7 @@ module Get =
 
     let paymentHistory : GetPaymentHistory = 
 
-        fun v -> async { 
+        fun v -> task { 
 
             let! connection = ConnectionMultiplexer.ConnectAsync(ConnectionString.Instance) |> Async.AwaitTask
             let cache    = connection.GetDatabase()

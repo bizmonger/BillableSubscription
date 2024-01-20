@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BillableSubscription\BillableSubscription.fsproj" />
+    <ProjectReference Include="..\BillableSubscription\BillableSubscription.Specification.fsproj" />
   </ItemGroup>
 
   <ItemGroup>

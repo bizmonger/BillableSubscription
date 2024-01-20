@@ -27,7 +27,7 @@ module Post =
 
     let registration : RequestRegistration = 
     
-        fun v -> async {
+        fun v -> task {
             
             try
                 let container = Container.get Database.name Container.registration
@@ -72,7 +72,7 @@ module Post =
 
     let payment : SubmitPayment = 
     
-        fun v -> async {
+        fun v -> task {
             
             try
                 let container = Container.get Database.name Container.payments

@@ -57,7 +57,7 @@ module Post =
     let payment : SubmitPayment = 
     
         fun v ->
-            async {
+            task {
         
                 let! connection = ConnectionMultiplexer.ConnectAsync(ConnectionString.Instance) |> Async.AwaitTask
                 let cache = connection.GetDatabase()

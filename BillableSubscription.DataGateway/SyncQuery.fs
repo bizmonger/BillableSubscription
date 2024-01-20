@@ -8,7 +8,7 @@ module Query =
 
     let status : GetRegistrationStatus =
 
-        fun v -> async {
+        fun v -> task {
 
             let cache(status:RegistrationStatus) =
 
@@ -32,7 +32,7 @@ module Query =
 
     let paymentHistory : GetPaymentHistory = 
 
-        fun v -> async {
+        fun v -> task {
 
             let cache items =
 

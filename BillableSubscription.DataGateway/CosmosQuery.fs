@@ -13,7 +13,7 @@ module Get =
 
     let status : GetRegistrationStatus =
 
-        fun v -> async { 
+        fun v -> task { 
 
             try
                 let container = Container.get Database.name Container.registration
@@ -28,7 +28,7 @@ module Get =
 
     let paymentHistory : GetPaymentHistory = 
 
-        fun v -> async {
+        fun v -> task {
 
             try
                 let container = Container.get Database.name Container.paymentHistory

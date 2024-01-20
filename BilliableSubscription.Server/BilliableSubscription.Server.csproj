@@ -12,4 +12,9 @@
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BillableSubscription.DataGateway\BillableSubscription.DataGateway.fsproj" />
+    <ProjectReference Include="..\BillableSubscription\BillableSubscription.Specification.fsproj" />
+  </ItemGroup>
+
 </Project>

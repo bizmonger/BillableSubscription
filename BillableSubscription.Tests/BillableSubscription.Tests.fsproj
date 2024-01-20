@@ -19,7 +19,7 @@
     </Content>
     <Compile Include="_Redis.fs" />
     <Compile Include="_Cosmos.fs" />
-    <Compile Include="_SyncQuery.fs" />
+    <Compile Include="_SyncLogic.fs" />
     <EmbeddedResource Include="Program.fs" />
   </ItemGroup>
 

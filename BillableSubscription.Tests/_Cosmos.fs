@@ -20,7 +20,7 @@ let ``save registration`` () =
         Cosmos.ConnectionString.Instance <- ConfigurationManager.AppSettings["cosmosConnectionString"];
 
         // Test
-        match! someRegistration |> Post.registration with
+        match! someRegistration |> Post.registration |> Async.AwaitTask with
         | Error msg  -> Assert.Fail msg
         | Ok receipt ->
 

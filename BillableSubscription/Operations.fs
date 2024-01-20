@@ -1,11 +1,12 @@
 ﻿namespace BeachMobile.BillableSubscription
 
+open System.Threading.Tasks
 open Language
 
 module Operations =
 
-    type RequestRegistration   = RegistrationRequest -> Async<Result<RegistrationStatus        ,ErrorDescription>>
-    type GetRegistrationStatus = RegistrationReceipt -> Async<Result<Option<RegistrationStatus>,ErrorDescription>>
+    type RequestRegistration   = RegistrationRequest -> Task<Result<RegistrationStatus        ,ErrorDescription>>
+    type GetRegistrationStatus = RegistrationReceipt -> Task<Result<Option<RegistrationStatus>,ErrorDescription>>
 
-    type SubmitPayment     = PaymentRequest -> Async<Result<SuccessfulPayment             ,ErrorDescription>>
-    type GetPaymentHistory = SubscriptionId -> Async<Result<option<seq<SuccessfulPayment>>,ErrorDescription>>
+    type SubmitPayment     = PaymentRequest -> Task<Result<SuccessfulPayment             ,ErrorDescription>>
+    type GetPaymentHistory = SubscriptionId -> Task<Result<option<seq<SuccessfulPayment>>,ErrorDescription>>
