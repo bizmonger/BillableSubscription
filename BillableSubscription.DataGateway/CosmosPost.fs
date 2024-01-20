@@ -9,6 +9,20 @@ open BeachMobile.BillableSubscription.DataGateway.Common
 open BeachMobile.BillableSubscription.DataGateway.Cosmos
 open BeachMobile.BillableSubscription.DataGateway.Cosmos.Database
 
+// CosmosDB Permissions
+(*
+    $resourceGroupName="*****"
+    $accountName="*****"
+    $principalId="*****" # Often called Object ID
+    $dataContributorRoleId="00000000-0000-0000-0000-000000000002"
+    az cosmosdb sql role assignment create `
+      --account-name $accountName `
+      --resource-group $resourceGroupName `
+      --scope "/" `
+      --principal-id $principalId `
+      --role-definition-id $dataContributorRoleId
+*)
+
 module Post =
 
     let registration : RequestRegistration = 
