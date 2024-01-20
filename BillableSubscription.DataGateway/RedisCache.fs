@@ -3,6 +3,7 @@
 open System.Collections.Generic
 open Newtonsoft.Json
 open StackExchange.Redis
+open BeachMobile.BillableSubscription.DataGateway.Common
 open BeachMobile.BillableSubscription.Language
 
 type ConnectionString() = static member val Instance = "" with get,set
@@ -47,15 +48,18 @@ type Cache(connectionString:string) =
 
         async {
             
-            match connection,cache with
-            | None,None   -> return Error Msg.noConnectionExists
-            | Some _, Some v ->
-                let! result = v.StringGetAsync(key) |> Async.AwaitTask
-                let hydated = JsonConvert.DeserializeObject<'result> result
+            try
+                match connection,cache with
+                | None,None   -> return Error Msg.noConnectionExists
+                | Some _, Some v ->
+                    let! result = v.StringGetAsync(key) |> Async.AwaitTask
+                    let hydated = JsonConvert.DeserializeObject<'result> result
 
-                return Ok hydated
+                    return Ok hydated
 
-            | _ -> return Error Msg.invalidCacheState
+                | _ -> return Error Msg.invalidCacheState
+
+            with ex -> return ex |> toError
         }
 
     member x.Post<'value> (kv:KeyValuePair<Key,'value>) : Async<Result<unit, ErrorDescription>> =
@@ -66,10 +70,13 @@ type Cache(connectionString:string) =
             | None   -> return Error Msg.noConnectionExists
             | Some v ->
 
-                let value = JsonConvert.SerializeObject(kv.Value)
-                let kv'   = KeyValuePair<RedisKey,RedisValue>(RedisKey(kv.Key), RedisValue(value))
+                try
+                    let value = JsonConvert.SerializeObject(kv.Value)
+                    let kv'   = KeyValuePair<RedisKey,RedisValue>(RedisKey(kv.Key), RedisValue(value))
 
-                match! v.StringSetAsync([|kv'|]) |> Async.AwaitTask with
-                | false -> return Error (Msg.failedToCache kv.Key)
-                | true  -> return Ok()
+                    match! v.StringSetAsync([|kv'|]) |> Async.AwaitTask with
+                    | false -> return Error (Msg.failedToCache kv.Key)
+                    | true  -> return Ok()
+
+                with ex -> return ex |> toError
         }

@@ -9,6 +9,7 @@
     <Compile Include="Entities.fs" />
     <Compile Include="CosmosConfiguration.fs" />
     <Compile Include="RedisConfiguration.fs" />
+    <Compile Include="Common.fs" />
     <Compile Include="CosmosPost.fs" />
     <Compile Include="CosmosQuery.fs" />
     <Compile Include="RedisCache.fs" />

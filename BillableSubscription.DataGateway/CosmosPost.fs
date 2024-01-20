@@ -5,6 +5,7 @@ open System.Net
 open BeachMobile.BillableSubscription.Entities
 open BeachMobile.BillableSubscription.Operations
 open BeachMobile.BillableSubscription.Language
+open BeachMobile.BillableSubscription.DataGateway.Common
 open BeachMobile.BillableSubscription.DataGateway.Cosmos
 open BeachMobile.BillableSubscription.DataGateway.Cosmos.Database
 
@@ -52,9 +53,7 @@ module Post =
 
                 | response -> return Error (response.StatusCode.ToString())
 
-            with ex -> 
-                let msg = ex.GetBaseException().Message
-                return Error msg       
+            with ex -> return ex |> toError     
         }
 
     let payment : SubmitPayment = 
@@ -76,7 +75,5 @@ module Post =
 
                 | response -> return Error (response.StatusCode.ToString())
             
-            with ex -> 
-                let msg = ex.GetBaseException().Message
-                return Error msg
+            with ex -> return ex |> toError
         }
