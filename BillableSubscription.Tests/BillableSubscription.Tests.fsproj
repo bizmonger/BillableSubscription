@@ -20,6 +20,7 @@
     <Compile Include="_Redis.fs" />
     <Compile Include="_Cosmos.fs" />
     <Compile Include="_SyncLogic.fs" />
+    <Compile Include="_httpClient.fs" />
     <EmbeddedResource Include="Program.fs" />
   </ItemGroup>
 
@@ -43,6 +44,7 @@
   <ItemGroup>
     <ProjectReference Include="..\BillableSubscription.DataGateway\BillableSubscription.DataGateway.fsproj" />
     <ProjectReference Include="..\BillableSubscription.TestAPI\BillableSubscription.TestAPI.fsproj" />
+    <ProjectReference Include="..\Common\HttpClient.fsproj" />
   </ItemGroup>
 
   <ItemGroup>
