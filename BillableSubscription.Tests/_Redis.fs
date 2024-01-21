@@ -8,7 +8,6 @@ open StackExchange.Redis
 
 type ConnectionString = BeachMobile.BillableSubscription.DataGateway.Redis.ConnectionString
 
-[<Ignore("")>]
 [<Test>]
 let ``cache registration`` () =
 
@@ -20,12 +19,13 @@ let ``cache registration`` () =
         let cache = connection.GetDatabase()
 
         // Test
-        match! someRegistrationReceipt |> Post.registration with
+        match! someRegistrationStatus |> Post.registration with
         | Error msg  -> Assert.Fail msg
-        | Ok status ->
+        | Ok () ->
 
             // Verify
-            let registration = cache.StringGet(KeyFor.registrationStatus status.Registration.id)
+            let receipt      = someRegistrationStatus.Registration.Request
+            let registration = cache.StringGet(KeyFor.registrationStatus(receipt.TenantId, receipt.Plan))
             Assert.That registration.HasValue
 
         // Teardown

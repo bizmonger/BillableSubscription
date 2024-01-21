@@ -45,7 +45,7 @@ module Post =
 
                 let status : RegistrationStatus = {
                     Registration = receipt
-                    Status       = "pending"
+                    Status       = "Pending"
                     Timestamp    = DateTime.UtcNow
                 }
 

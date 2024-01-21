@@ -14,9 +14,9 @@ module Query =
 
                 async {
                 
-                    match! Redis.Post.registration status.Registration with
+                    match! Redis.Post.registration status with
                     | Error msg -> return Error msg
-                    | Ok r      -> return Ok (Some r)
+                    | Ok ()     -> return Ok (Some status.Registration)
                 }
         
             match! Redis.Get.status v with
@@ -27,7 +27,11 @@ module Query =
                 match! Cosmos.Get.status v with
                 | Error msg   -> return Error msg
                 | Ok None     -> return Ok None
-                | Ok (Some r) -> return! cache r
+                | Ok (Some r) ->
+
+                    match! cache r with
+                    | Error msg -> return Error msg
+                    | Ok _ -> return Ok (Some r)
         }
 
     let paymentHistory : GetPaymentHistory = 

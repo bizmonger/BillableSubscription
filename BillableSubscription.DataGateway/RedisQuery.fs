@@ -14,13 +14,15 @@ module Get =
             try
                 let! connection = ConnectionMultiplexer.ConnectAsync(ConnectionString.Instance) |> Async.AwaitTask
                 let cache       = connection.GetDatabase()
-                let response    = cache.StringGet(KeyFor.registrationStatus v.id)
+                let receipt     = v.Request
+                let response    = cache.StringGet(KeyFor.registrationStatus(receipt.TenantId, receipt.Plan))
             
                 match response.HasValue with
                 | false -> 
                     try
                         do! connection.CloseAsync() |> Async.AwaitTask
                         return Ok None
+
                     with ex -> return Error (ex.GetBaseException().Message)
 
                 | true  ->

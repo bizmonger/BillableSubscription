@@ -23,6 +23,12 @@ module Mock =
         Timestamp = DateTime.UtcNow
     }
 
+    let someRegistrationStatus : RegistrationStatus = {
+        Registration = someRegistrationReceipt
+        Status    = "Pending"
+        Timestamp = someRegistrationReceipt.Timestamp
+    }
+
     let somePlan : Plan = {
         Name        = "some plan"
         Description = "some plan description"

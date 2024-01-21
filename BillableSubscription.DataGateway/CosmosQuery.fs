@@ -18,7 +18,7 @@ module Get =
             try
                 let container = Container.get Database.name Container.registration
 
-                match! container.ReadItemAsync<RegistrationStatusEntity>(v.id, PartitionKey(KeyFor.registrationStatus v.id)) |> Async.AwaitTask with
+                match! container.ReadItemAsync<RegistrationStatusEntity>(v.id, PartitionKey(KeyFor.registrationStatus(v.Request.TenantId, v.Request.Plan))) |> Async.AwaitTask with
                 | response when response.StatusCode = System.Net.HttpStatusCode.OK -> 
                     return Ok (Some response.Resource.Status)
                 | _ -> return Error "Failed to retrieve registration status"

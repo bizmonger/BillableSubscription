@@ -5,6 +5,7 @@ open Newtonsoft.Json
 open BeachMobile.BillableSubscription.Language
 open BeachMobile.BillableSubscription.Operations
 open BeachMobile.BillableSubscription.Entities
+open BeachMobile.BillableSubscription.DataGateway
 open BeachMobile.BillableSubscription.DataGateway.Cosmos
 open StackExchange.Redis
 
@@ -24,16 +25,18 @@ module Post =
             | false -> Error Msg.failedSetexpiration
             | true  -> Ok ()
 
-    let registration (entity:RegistrationReceipt) =
+    let registration (v:RegistrationStatus) =
 
         async {
         
-            let! connection = ConnectionMultiplexer.ConnectAsync(ConnectionString.Instance) |> Async.AwaitTask
+            let! connection = ConnectionMultiplexer.ConnectAsync(Redis.ConnectionString.Instance) |> Async.AwaitTask
             let cache = connection.GetDatabase()
                 
-            let json = JsonConvert.SerializeObject(entity)
-                
-            match register cache entity.id json with
+            let json    = JsonConvert.SerializeObject(v)
+            let receipt = v.Registration.Request
+            let key     = KeyFor.registrationStatus(receipt.TenantId, receipt.Plan)
+
+            match register cache key json with
             | Error msg -> 
                 do! connection.CloseAsync() |> Async.AwaitTask
                 return Error msg
@@ -41,17 +44,8 @@ module Post =
             | Ok () ->
 
                 do! connection.CloseAsync() |> Async.AwaitTask
-
-                let receipt : RegistrationReceipt = {
-                    id        = entity.id
-                    Request   = entity.Request
-                    Timestamp = DateTime.UtcNow
-                }
                     
-                return Ok { Registration = receipt
-                            Status       = "Pending"
-                            Timestamp    = receipt.Timestamp
-                          }
+                return Ok()
             }
 
     let payment : SubmitPayment = 
