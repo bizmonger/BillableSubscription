@@ -13,7 +13,7 @@ let ``Sync save registration`` () =
         let url = @"https://localhost:32772/"
 
         // Test
-        let! response = WebGateway.postTo url "registration" someRegistration
+        let! response = WebGateway.get url "registration" someRegistration
 
         // Verify
         ()

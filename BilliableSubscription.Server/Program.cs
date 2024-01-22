@@ -11,10 +11,10 @@ using SyncLogic = BeachMobile.BillableSubscription.DataGateway.SyncLogic;
 using static BeachMobile.BillableSubscription.Language;
 
 var builder = WebApplication.CreateBuilder(args);
-Cosmos.ConnectionString.Instance = builder.Configuration.GetConnectionString("cosmosConnectionString");
-Redis .ConnectionString.Instance = builder.Configuration.GetConnectionString("RedisConnectionString");
-var app = builder.Build();
+Cosmos.ConnectionString.Instance = builder.Configuration.GetConnectionString("cosmos-connection-string");
+Redis .ConnectionString.Instance = builder.Configuration.GetConnectionString("redis-connection-string");
 
+var app = builder.Build();
 app.MapGet("/", () => "Welcome to Billable Subscriptions");
 
 app.MapPost("/registration", async (RegistrationRequest registration) => {

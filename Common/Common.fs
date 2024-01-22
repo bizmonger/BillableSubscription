@@ -29,6 +29,13 @@ module WebGateway =
             return! client.GetAsync(resource) |> Async.AwaitTask
         }
 
+    let getWithToken baseAddress (resource:string) =
+
+        task {
+            let client = httpClient baseAddress
+            return! client.GetAsync(resource) |> Async.AwaitTask
+        }
+
     let postTo (baseAddress:string) (resource:string) (payload:Object) =
 
         let tokenSource = new CancellationTokenSource(TimeSpan(0,3,0));
