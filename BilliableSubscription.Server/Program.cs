@@ -6,7 +6,8 @@
 //-----------------------------------------------------------------------------------------------------
 
 using Cosmos = BeachMobile.BillableSubscription.DataGateway.Cosmos;
-using Redis = BeachMobile.BillableSubscription.DataGateway.Redis;
+using Redis  = BeachMobile.BillableSubscription.DataGateway.Redis;
+using SyncLogic = BeachMobile.BillableSubscription.DataGateway.SyncLogic;
 using static BeachMobile.BillableSubscription.Language;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,7 +28,7 @@ app.MapPost("/registration", async (RegistrationRequest registration) => {
 
 app.MapPost("/registration_status", async (RegistrationReceipt receipt) => {
 
-    var result = await Cosmos.Get.status(receipt);
+    var result = await SyncLogic.Query.status(receipt);
 
     if (result.IsOk)
          return Results.Ok(result.ResultValue);
@@ -45,7 +46,7 @@ app.MapPost("/payment", async (PaymentRequest payment) => {
 
 app.MapPost("/payment_history", async (PaymentHistoryRequest request) => {
 
-    var result = await Cosmos.Get.paymentHistory(request.SubscriptionId);
+    var result = await SyncLogic.Query.paymentHistory(request.SubscriptionId);
 
     if (result.IsOk)
          return Results.Ok(result.ResultValue);
