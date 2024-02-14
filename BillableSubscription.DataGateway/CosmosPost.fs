@@ -2,6 +2,7 @@
 
 open System
 open System.Net
+open Microsoft.Azure.Cosmos
 open BeachMobile.BillableSubscription.Entities
 open BeachMobile.BillableSubscription.Operations
 open BeachMobile.BillableSubscription.Language
@@ -25,12 +26,12 @@ open BeachMobile.BillableSubscription.DataGateway.Cosmos.Database
 
 module Post =
 
-    let registration : RequestRegistration = 
+    let registration : RequestRegistration<CosmosClient> = 
     
-        fun v -> task {
+        fun v client -> task {
             
             try
-                let container = Container.get Database.name Container.registration
+                let container = client |> Container.get Database.name Container.registration
 
                 let item : RegistrationRequestEntity = {
                     id = Guid.NewGuid() |> string
@@ -70,12 +71,12 @@ module Post =
             with ex -> return ex |> toError     
         }
 
-    let payment : SubmitPayment = 
+    let payment : SubmitPayment<CosmosClient> = 
     
-        fun v -> task {
+        fun v client -> task {
             
             try
-                let container = Container.get Database.name Container.payments
+                let container = client |> Container.get Database.name Container.registration
 
                 let request : PaymentRequestEntity = {
                     id = Guid.NewGuid() |> string

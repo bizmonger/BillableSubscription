@@ -2,9 +2,13 @@ module BillableSubscription.Sync.Tests
 
 open System.Configuration
 open NUnit.Framework
+open Microsoft.Azure.Cosmos
+open Azure.Identity
+open StackExchange.Redis
 open BeachMobile.BillableSubscription.TestAPI.Mock
 open BeachMobile.BillableSubscription.DataGateway
 open BeachMobile.BillableSubscription.DataGateway.Cosmos
+open BeachMobile.BillableSubscription.DataGateway.Redis
 
 [<Test>]
 let ``Sync save registration`` () =
@@ -12,16 +16,24 @@ let ``Sync save registration`` () =
     async {
     
         // Setup
-        Cosmos.ConnectionString.Instance <- ConfigurationManager.AppSettings["cosmosConnectionString"];
-        Redis. ConnectionString.Instance <- ConfigurationManager.AppSettings["RedisConnectionString"];
+        let cosmosConnectionString = ConfigurationManager.AppSettings["cosmosConnectionString"];
+        let redisConnectionString = ConfigurationManager.AppSettings["RedisConnectionString"];
+
+        let cosmosClient = new CosmosClient(cosmosConnectionString, DefaultAzureCredential())
+        let! multiplexer = ConnectionMultiplexer.ConnectAsync(redisConnectionString) |> Async.AwaitTask
+
+        let connection : SyncConnection = {
+            Multiplexer  = multiplexer
+            CosmosClient = cosmosClient
+        }
 
         // Test
-        match! someRegistration |> Post.registration |> Async.AwaitTask with
+        match! connection.Multiplexer |> Post.registration someRegistrationStatus |> Async.AwaitTask with
         | Error msg  -> Assert.Fail msg
         | Ok receipt ->
 
             // Verify
-            match! SyncLogic.Query.status receipt.Registration |> Async.AwaitTask with
+            match! connection |> SyncLogic.Query.status receipt |> Async.AwaitTask with
             | Error msg -> Assert.Fail msg
             | Ok status -> Assert.That(status.Value.Registration.Request = someRegistration)
     }
@@ -33,18 +45,26 @@ let ``save payment`` () =
     async {
     
         // Setup
-        Cosmos.ConnectionString.Instance <- ConfigurationManager.AppSettings["cosmosConnectionString"];
-        Redis. ConnectionString.Instance <- ConfigurationManager.AppSettings["RedisConnectionString"];
+        let cosmosConnectionString = ConfigurationManager.AppSettings["cosmosConnectionString"];
+        let redisConnectionString = ConfigurationManager.AppSettings["RedisConnectionString"];
+
+        let cosmosClient = new CosmosClient(cosmosConnectionString, DefaultAzureCredential())
+        let! multiplexer = ConnectionMultiplexer.ConnectAsync(redisConnectionString) |> Async.AwaitTask
+
+        let connection : SyncConnection = {
+            Multiplexer  = multiplexer
+            CosmosClient = cosmosClient
+        }
 
         // Test
-        match! somePayment |> Post.payment |> Async.AwaitTask with
+        match! multiplexer |> Post.payment somePayment |> Async.AwaitTask with
         | Error msg  -> Assert.Fail msg
         | Ok success ->
 
             // Verify
             let subscriptionId = success.Payment.Subscription.Registration.id
 
-            match! SyncLogic.Query.paymentHistory subscriptionId |> Async.AwaitTask with
+            match! connection |> SyncLogic.Query.paymentHistory subscriptionId |> Async.AwaitTask with
             | Error msg   -> Assert.Fail msg
             | Ok None     -> Assert.Fail "no history"
             | Ok (Some h) -> Assert.That((h |> Seq.head).Payment = somePayment)

@@ -1,9 +1,6 @@
 ﻿namespace BeachMobile.BillableSubscription.DataGateway.Cosmos
 
 open Microsoft.Azure.Cosmos
-open Azure.Identity
-
-type ConnectionString() = static member val Instance = "" with get,set
 
 module Container =
 
@@ -18,9 +15,8 @@ module Database =
 
     module Container =
 
-        let get (db:string) (containerId:string) =
+        let get (db:string) (containerId:string) (client:CosmosClient) =
 
-            let client    = new CosmosClient(ConnectionString.Instance, DefaultAzureCredential())
             let database  = client.GetDatabase(db)
             let container = database.GetContainer(containerId)
             container

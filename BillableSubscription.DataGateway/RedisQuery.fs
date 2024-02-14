@@ -2,20 +2,25 @@
 
 open Newtonsoft.Json
 open StackExchange.Redis
+open Microsoft.Azure.Cosmos
 open BeachMobile.BillableSubscription.Operations
 open BeachMobile.BillableSubscription.Language
 
+type SyncConnection = {
+    Multiplexer  : ConnectionMultiplexer
+    CosmosClient : CosmosClient
+}
+
 module Get =
 
-    let status : GetRegistrationStatus =
+    let status : GetRegistrationStatus<ConnectionMultiplexer> =
 
-        fun v -> task { 
+        fun v connection -> task { 
 
             try
-                let! connection = ConnectionMultiplexer.ConnectAsync(ConnectionString.Instance) |> Async.AwaitTask
-                let cache       = connection.GetDatabase()
-                let receipt     = v.Request
-                let response    = cache.StringGet(KeyFor.registrationStatus(receipt.TenantId, receipt.Plan))
+                let cache    = connection.GetDatabase()
+                let receipt  = v.Request
+                let response = cache.StringGet(KeyFor.registrationStatus(receipt.TenantId, receipt.Plan))
             
                 match response.HasValue with
                 | false -> 
@@ -34,11 +39,10 @@ module Get =
                 return Error msg
         }
 
-    let paymentHistory : GetPaymentHistory = 
+    let paymentHistory : GetPaymentHistory<ConnectionMultiplexer> = 
 
-        fun v -> task { 
+        fun v connection -> task { 
 
-            let! connection = ConnectionMultiplexer.ConnectAsync(ConnectionString.Instance) |> Async.AwaitTask
             let cache    = connection.GetDatabase()
             let response = cache.StringGet(v)
             

@@ -16,10 +16,18 @@ using Cosmos = BeachMobile.BillableSubscription.DataGateway.Cosmos;
 using Redis  = BeachMobile.BillableSubscription.DataGateway.Redis;
 using SyncLogic = BeachMobile.BillableSubscription.DataGateway.SyncLogic;
 using static BeachMobile.BillableSubscription.Language;
+using BeachMobile.BillableSubscription.DataGateway.Redis;
+using Microsoft.Azure.Cosmos;
+using StackExchange.Redis;
+using Azure.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
-Cosmos.ConnectionString.Instance = builder.Configuration.GetConnectionString("cosmos-connection-string");
-Redis .ConnectionString.Instance = builder.Configuration.GetConnectionString("redis-connection-string");
+var cosmosConnectionString = builder.Configuration.GetConnectionString("cosmos-connection-string");
+var redisConnectionString  = builder.Configuration.GetConnectionString("redis-connection-string");
+
+var cosmosClient = new CosmosClient(cosmosConnectionString, new DefaultAzureCredential());
+var multiplexer  = await ConnectionMultiplexer.ConnectAsync(redisConnectionString);
+var connection   = new SyncConnection(multiplexer, cosmosClient);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -35,7 +43,7 @@ app.MapGet("/", () => "Welcome to Billable Subscriptions");
 
 app.MapPost("/registration", async (RegistrationRequest registration) => {
     
-    var result = await Cosmos.Post.registration(registration);
+    var result = await Cosmos.Post.registration(registration, connection.CosmosClient);
 
     if (result.IsOk) 
          return Results.Ok(result.ResultValue);
@@ -46,7 +54,7 @@ app.MapPost("/registration", async (RegistrationRequest registration) => {
 
 app.MapPost("/get_registration_status", async (RegistrationReceipt receipt) => {
 
-    var result = await SyncLogic.Query.status(receipt);
+    var result = await SyncLogic.Query.status(receipt, connection);
 
     if (result.IsOk)
          return Results.Ok(result.ResultValue);
@@ -57,7 +65,7 @@ app.MapPost("/get_registration_status", async (RegistrationReceipt receipt) => {
 
 app.MapPost("/payment", async (PaymentRequest payment) => {
 
-    var result = await Cosmos.Post.payment(payment);
+    var result = await Cosmos.Post.payment(payment, connection.CosmosClient);
 
     if (result.IsOk)
          return Results.Ok(result.ResultValue);
@@ -68,7 +76,7 @@ app.MapPost("/payment", async (PaymentRequest payment) => {
 
 app.MapPost("/get_payment_history", async (PaymentHistoryRequest request) => {
 
-    var result = await SyncLogic.Query.paymentHistory(request.SubscriptionId);
+    var result = await SyncLogic.Query.paymentHistory(request.SubscriptionId, connection);
 
     if (result.IsOk)
          return Results.Ok(result.ResultValue);

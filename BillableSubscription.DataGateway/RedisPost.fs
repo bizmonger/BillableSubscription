@@ -2,12 +2,10 @@
 
 open System
 open Newtonsoft.Json
+open StackExchange.Redis
 open BeachMobile.BillableSubscription.Language
 open BeachMobile.BillableSubscription.Operations
 open BeachMobile.BillableSubscription.Entities
-open BeachMobile.BillableSubscription.DataGateway
-open BeachMobile.BillableSubscription.DataGateway.Cosmos
-open StackExchange.Redis
 
 // Documentation:
 // https://medium.com/@sadigrzazada20/getting-started-with-redis-in-c-using-stackexchange-redis-353a9d65a136
@@ -25,35 +23,37 @@ module Post =
             | false -> Error Msg.failedSetexpiration
             | true  -> Ok ()
 
-    let registration (v:RegistrationStatus) =
+    let registration (v:RegistrationStatus) (connection:ConnectionMultiplexer) =
 
-        async {
+        task {
         
-            let! connection = ConnectionMultiplexer.ConnectAsync(Redis.ConnectionString.Instance) |> Async.AwaitTask
             let cache = connection.GetDatabase()
                 
             let json    = JsonConvert.SerializeObject(v)
-            let receipt = v.Registration.Request
-            let key     = KeyFor.registrationStatus(receipt.TenantId, receipt.Plan)
+            let request = v.Registration.Request
+            let key     = KeyFor.registrationStatus(request.TenantId, request.Plan)
 
             match register cache key json with
             | Error msg -> 
-                do! connection.CloseAsync() |> Async.AwaitTask
+                do! connection.CloseAsync()
                 return Error msg
 
             | Ok () ->
 
-                do! connection.CloseAsync() |> Async.AwaitTask
+                do! connection.CloseAsync()
                     
-                return Ok()
+                return Ok { id = Guid.NewGuid() |> string
+                            Request   = request
+                            Timestamp = DateTime.Now
+                          }
             }
 
-    let payment : SubmitPayment = 
+    let payment : SubmitPayment<ConnectionMultiplexer> = 
     
-        fun v ->
+        fun v connection ->
+
             task {
         
-                let! connection = ConnectionMultiplexer.ConnectAsync(ConnectionString.Instance) |> Async.AwaitTask
                 let cache = connection.GetDatabase()
 
                 let data : PaymentRequestEntity = {
@@ -74,21 +74,19 @@ module Post =
                     return Ok { Payment= v; Timestamp= DateTime.UtcNow }
             }
 
-    let paymentHistory (v:PaymentHistory) = 
+    let paymentHistory (v:PaymentHistory) (connection:ConnectionMultiplexer) = 
     
-        async {
+        task {
         
-            let! connection = ConnectionMultiplexer.ConnectAsync(ConnectionString.Instance) |> Async.AwaitTask
             let cache = connection.GetDatabase()
-
-            let json = JsonConvert.SerializeObject(v)
+            let json  = JsonConvert.SerializeObject(v)
                 
             match register cache (KeyFor.paymentHistory v.SubscriptionId) json with
             | Error msg -> 
-                do! connection.CloseAsync() |> Async.AwaitTask
+                do! connection.CloseAsync()
                 return Error msg
 
             | Ok () ->
-                do! connection.CloseAsync() |> Async.AwaitTask
+                do! connection.CloseAsync()
                 return Ok()
         }

@@ -6,26 +6,23 @@ open BeachMobile.BillableSubscription.TestAPI.Mock
 open BeachMobile.BillableSubscription.DataGateway.Redis
 open StackExchange.Redis
 
-type ConnectionString = BeachMobile.BillableSubscription.DataGateway.Redis.ConnectionString
-
 [<Test>]
 let ``cache registration`` () =
 
     async {
     
         // Setup
-        ConnectionString.Instance <- ConfigurationManager.AppSettings["redisConnectionString"];
-        let! connection = ConnectionMultiplexer.ConnectAsync(ConnectionString.Instance) |> Async.AwaitTask
+        let redisConnectionString = ConfigurationManager.AppSettings["redisConnectionString"]
+        let! connection = ConnectionMultiplexer.ConnectAsync(redisConnectionString) |> Async.AwaitTask
         let cache = connection.GetDatabase()
 
         // Test
-        match! someRegistrationStatus |> Post.registration with
+        match! connection |> Post.registration someRegistrationStatus |> Async.AwaitTask with
         | Error msg  -> Assert.Fail msg
-        | Ok () ->
+        | Ok receipt ->
 
             // Verify
-            let receipt      = someRegistrationStatus.Registration.Request
-            let registration = cache.StringGet(KeyFor.registrationStatus(receipt.TenantId, receipt.Plan))
+            let registration = cache.StringGet(KeyFor.registrationStatus(receipt.Request.TenantId, receipt.Request.Plan))
             Assert.That registration.HasValue
 
         // Teardown

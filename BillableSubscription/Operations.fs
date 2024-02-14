@@ -5,8 +5,8 @@ open Language
 
 module Operations =
 
-    type RequestRegistration   = RegistrationRequest -> Task<Result<RegistrationStatus        ,ErrorDescription>>
-    type GetRegistrationStatus = RegistrationReceipt -> Task<Result<Option<RegistrationStatus>,ErrorDescription>>
+    type RequestRegistration<'connection>   = RegistrationRequest -> 'connection -> Task<Result<RegistrationStatus        ,ErrorDescription>>
+    type GetRegistrationStatus<'connection> = RegistrationReceipt -> 'connection -> Task<Result<Option<RegistrationStatus>,ErrorDescription>>
 
-    type SubmitPayment     = PaymentRequest -> Task<Result<SuccessfulPayment             ,ErrorDescription>>
-    type GetPaymentHistory = SubscriptionId -> Task<Result<option<seq<SuccessfulPayment>>,ErrorDescription>>
+    type SubmitPayment<'connection>     = PaymentRequest -> 'connection -> Task<Result<SuccessfulPayment             ,ErrorDescription>>
+    type GetPaymentHistory<'connection> = SubscriptionId -> 'connection -> Task<Result<option<seq<SuccessfulPayment>>,ErrorDescription>>

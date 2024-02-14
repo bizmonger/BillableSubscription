@@ -4,6 +4,7 @@ open System.Net
 open System.Configuration
 open Microsoft.Azure.Cosmos
 open NUnit.Framework
+open Azure.Identity
 open BeachMobile.BillableSubscription.TestAPI.Mock
 open BeachMobile.BillableSubscription.Entities
 open BeachMobile.BillableSubscription.DataGateway
@@ -17,15 +18,16 @@ let ``save registration`` () =
     async {
     
         // Setup
-        Cosmos.ConnectionString.Instance <- ConfigurationManager.AppSettings["cosmosConnectionString"];
+        let cosmosConnectionString = ConfigurationManager.AppSettings["cosmosConnectionString"];
+        let client = new CosmosClient(cosmosConnectionString, DefaultAzureCredential())
 
         // Test
-        match! someRegistration |> Post.registration |> Async.AwaitTask with
+        match! client |> Post.registration someRegistration |> Async.AwaitTask with
         | Error msg  -> Assert.Fail msg
         | Ok receipt ->
 
             // Verify
-            let container = Container.get Database.name Container.registration
+            let container = client |> Container.get Database.name Container.registration
             let response  = container.ReadItemAsync<RegistrationRequestEntity>(someRowKey, PartitionKey(receipt.Registration.id)).Result
 
             Assert.That(response.StatusCode = HttpStatusCode.OK)

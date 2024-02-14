@@ -11,12 +11,12 @@ open BeachMobile.BillableSubscription.DataGateway.Redis
 
 module Get =
 
-    let status : GetRegistrationStatus =
+    let status : GetRegistrationStatus<CosmosClient> =
 
-        fun v -> task { 
+        fun v client -> task { 
 
             try
-                let container = Container.get Database.name Container.registration
+                let container = client |> Container.get Database.name Container.registration
 
                 match! container.ReadItemAsync<RegistrationStatusEntity>(v.id, PartitionKey(KeyFor.registrationStatus(v.Request.TenantId, v.Request.Plan))) |> Async.AwaitTask with
                 | response when response.StatusCode = System.Net.HttpStatusCode.OK -> 
@@ -26,12 +26,12 @@ module Get =
             with ex -> return ex |> toError
         }
 
-    let paymentHistory : GetPaymentHistory = 
+    let paymentHistory : GetPaymentHistory<CosmosClient> = 
 
-        fun v -> task {
+        fun v client -> task {
 
             try
-                let container = Container.get Database.name Container.paymentHistory
+                let container = client |> Container.get Database.name Container.registration
 
                 match! container.ReadItemAsync<PaymentHistoryEntity>(v, PartitionKey(Container.paymentHistory)) |> Async.AwaitTask with
                 | response when response.StatusCode = System.Net.HttpStatusCode.OK -> 

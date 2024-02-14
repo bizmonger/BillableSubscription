@@ -6,8 +6,6 @@ open StackExchange.Redis
 open BeachMobile.BillableSubscription.DataGateway.Common
 open BeachMobile.BillableSubscription.Language
 
-type ConnectionString() = static member val Instance = "" with get,set
-
 module Msg =
 
     let noConnectionExists = "No Redis server connection"
